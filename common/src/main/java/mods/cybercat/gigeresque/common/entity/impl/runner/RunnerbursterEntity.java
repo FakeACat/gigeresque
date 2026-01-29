@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -38,12 +37,10 @@ import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-public class RunnerbursterEntity extends ChestbursterEntity implements Growable {
+public class RunnerbursterEntity extends ChestbursterEntity {
 
     public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
     }

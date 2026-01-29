@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.states.EggStates;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
@@ -54,9 +52,7 @@ public class AlienEggEntity extends AlienEntity {
     public int hatchedOpenTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
-        super(type, world, new Options(BloodType.NONE, 0));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(type, world, new Options(BloodType.NONE, 0, false, 0, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

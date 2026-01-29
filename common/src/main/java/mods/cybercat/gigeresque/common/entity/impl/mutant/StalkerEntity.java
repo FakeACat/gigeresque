@@ -1,9 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,7 +30,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FindDarknessGoal
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -44,12 +41,9 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class StalkerEntity extends AlienEntity {
 
     public StalkerEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.gooMutant(3));
+        super(entityType, world, Options.gooMutant(3, true, 0, true));
         this.vibrationUser = new AzureVibrationUser(this, 1.9F);
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.STALKER_ANIM_SELECTOR;
-        this.climbingManager.canClimb = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -127,25 +121,6 @@ public class StalkerEntity extends AlienEntity {
             });
         }
         super.die(source);
-    }
-
-    @Override
-    public boolean doHurtTarget(@NotNull Entity target) {
-        if (
-            target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom()
-                .nextInt(
-                    0,
-                    10
-                ) > 7
-        ) {
-            livingEntity.hurt(
-                damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2 ? CommonMod.config.entityConfigs.stalkerConfigs.stalkerTailAttackDamage : 0.0f
-            );
-            this.heal(1.0833f);
-        }
-        this.heal(1.0833f);
-        return super.doHurtTarget(target);
     }
 
     @Override

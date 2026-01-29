@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -41,7 +40,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCre
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -62,12 +60,9 @@ public class FacehuggerEntity extends AlienEntity {
     public float ticksAttachedToHost = -1.0f;
 
     public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, Options.standardAlien(1));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(type, world, new Options(BloodType.ACID, 1, true, 0, false));
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
         this.animationSelector = GigMeleeAttackSelector.HUGGER_SELECTOR;
-        this.climbingManager.canClimb = true;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

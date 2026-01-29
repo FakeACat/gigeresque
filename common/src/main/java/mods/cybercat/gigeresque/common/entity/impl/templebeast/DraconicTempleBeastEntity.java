@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.templebeast;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -22,7 +21,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.ChargeAtTargetGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
@@ -31,9 +29,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class DraconicTempleBeastEntity extends AlienEntity {
 
     public DraconicTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(entityType, level, Options.standardAlien(3));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(entityType, level, Options.standardAlien(3, false, 0.2f));
         this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
     }
 

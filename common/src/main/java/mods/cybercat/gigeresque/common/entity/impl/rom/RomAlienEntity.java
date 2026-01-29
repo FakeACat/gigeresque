@@ -1,7 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.rom;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,8 +12,6 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
@@ -29,10 +25,8 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.EggmorphGoal;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
-import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
@@ -42,9 +36,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RomAlienEntity extends AlienEntity {
 
     public RomAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
-        super(type, world, Options.standardAlien(3));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(type, world, Options.standardAlien(3, true, 0.1f));
         this.vibrationUser = new AzureVibrationUser(this, 1.5f);
         this.animationSelector = GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR;
     }
@@ -108,38 +100,6 @@ public class RomAlienEntity extends AlienEntity {
         if (spawnType != MobSpawnType.NATURAL)
             setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
-    }
-
-    @Override
-    public boolean doHurtTarget(@NotNull Entity target) {
-        if (
-            target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom()
-                .nextInt(
-                    0,
-                    10
-                ) > 7
-        ) {
-            if (target instanceof Player playerEntity) {
-                playerEntity.drop(playerEntity.getInventory().getSelected(), false);
-                playerEntity.getInventory().setItem(playerEntity.getInventory().selected, ItemStack.EMPTY);
-            }
-            if (livingEntity instanceof Mob mobEntity) {
-                mobEntity.getMainHandItem();
-                this.drop(mobEntity, mobEntity.getMainHandItem());
-                mobEntity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
-            }
-            livingEntity.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-            livingEntity.hurt(
-                GigDamageSources.of(this.level(), GigDamageSources.XENO),
-                this.getRandom().nextInt(4) > 2
-                    ? CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoTailAttackDamage
-                    : (float) CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoAttackDamage
-            );
-            this.heal(1.0833f);
-            return super.doHurtTarget(target);
-        }
-        this.heal(1.0833f);
-        return super.doHurtTarget(target);
     }
 
     @Override

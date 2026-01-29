@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.mutant;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
@@ -24,7 +23,6 @@ import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -33,10 +31,8 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class HammerpedeEntity extends AlienEntity {
 
     public HammerpedeEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.gooMutant(1));
+        super(entityType, world, Options.gooMutant(1, false, 0, false));
         this.vibrationUser = new AzureVibrationUser(this, 0.9F);
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = GigMeleeAttackSelector.HAMMER_ANIM_SELECTOR;
     }
 

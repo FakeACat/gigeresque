@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.hellmorphs;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,7 +20,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.LungeAtTargetGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
@@ -29,9 +27,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class BaphomorphEntity extends AlienEntity {
 
     public BaphomorphEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(entityType, level, Options.standardAlien(3));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(entityType, level, Options.standardAlien(3, false, 0.2f));
         this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
     }
 

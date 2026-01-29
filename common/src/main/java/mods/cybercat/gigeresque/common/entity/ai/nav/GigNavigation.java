@@ -31,7 +31,7 @@ public class GigNavigation extends AzureNavigation {
 
     @Override
     protected @NotNull Vec3 getTempMobPos() {
-        if (!alien.climbingManager.canClimb) {
+        if (!alien.options.canClimb()) {
             return super.getTempMobPos();
         }
         return mob.position();
@@ -39,7 +39,7 @@ public class GigNavigation extends AzureNavigation {
 
     @Override
     protected boolean canUpdatePath() {
-        if (!alien.climbingManager.canClimb) {
+        if (!alien.options.canClimb()) {
             return super.canUpdatePath();
         }
         return true; // maybe limit this to on ground, climbing or in water?
@@ -68,7 +68,7 @@ public class GigNavigation extends AzureNavigation {
     @Override
     public void tick() {
         super.tick();
-        if (alien.climbingManager.canClimb) {
+        if (alien.options.canClimb()) {
             // prevents trying to set the wanted position to the ground
             if (path != null && !isDone()) {
                 Vec3 wanted = path.getNextEntityPos(mob);

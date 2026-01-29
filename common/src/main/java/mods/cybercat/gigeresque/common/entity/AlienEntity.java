@@ -27,7 +27,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
@@ -75,10 +77,48 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
-/**
- * TODO: Create new version of this class that will will use crawling library when ready.
- */
 public abstract class AlienEntity extends Monster implements VibrationSystem, Growable, AbstractAlien {
+
+    public enum BloodType {
+        NONE,
+        ACID,
+        GOO
+    }
+
+    public record Options(
+        BloodType bloodType,
+        int bloodDiameter,
+        boolean canClimb,
+        float slapItemChance,
+        boolean healsOnHit
+    ) {
+
+        public static Options standardAlien(int bloodDiameter, boolean canClimb, float slapItemChance) {
+            return new Options(BloodType.ACID, bloodDiameter, canClimb, slapItemChance, true);
+        }
+
+        public static Options gooMutant(int bloodDiameter, boolean canClimb, float slapItemChance, boolean healsOnHit) {
+            return new Options(
+                CommonMod.config.entityConfigs.gooMutantBloodType,
+                bloodDiameter,
+                canClimb,
+                slapItemChance,
+                healsOnHit
+            );
+        }
+
+        public static Options neomorph(int bloodDiameter, float slapItemChance, boolean healsOnHit) {
+            return new Options(
+                CommonMod.config.entityConfigs.neomorphBloodType,
+                bloodDiameter,
+                false,
+                slapItemChance,
+                healsOnHit
+            );
+        }
+    }
+
+    public Options options;
 
     public static final EntityDataAccessor<BlockPos> HOME_BLOCKPOS = SynchedEntityData.defineId(
         AlienEntity.class,
@@ -193,9 +233,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public SearchingManager searchingManager;
 
-    public AnimationDispatcher animationDispatcher;
+    public final AnimationDispatcher animationDispatcher;
 
-    public MoveAnalysis moveAnalysis;
+    public final MoveAnalysis moveAnalysis;
 
     public final CrawlingManager crawlingManager;
 
@@ -208,38 +248,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     private int healCounter;
 
     public final ClimbingManager climbingManager;
-
-    public enum BloodType {
-        NONE,
-        ACID,
-        GOO
-    }
-
-    public static class Options {
-
-        public BloodType bloodType;
-
-        public int bloodDiameter;
-
-        public Options(BloodType bloodType, int bloodDiameter) {
-            this.bloodType = bloodType;
-            this.bloodDiameter = bloodDiameter;
-        }
-
-        public static Options standardAlien(int bloodDiameter) {
-            return new Options(BloodType.ACID, bloodDiameter);
-        }
-
-        public static Options gooMutant(int bloodDiameter) {
-            return new Options(CommonMod.config.entityConfigs.gooMutantBloodType, bloodDiameter);
-        }
-
-        public static Options neomorph(int bloodDiameter) {
-            return new Options(CommonMod.config.entityConfigs.neomorphBloodType, bloodDiameter);
-        }
-    }
-
-    public Options options;
 
     protected AlienEntity(EntityType<? extends Monster> entityType, Level level, Options options) {
         super(entityType, level);
@@ -259,6 +267,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
             CLIMBING_UP_DIR,
             CLIMBING_DIST_FROM_BLOCK
         );
+        this.animationDispatcher = new AnimationDispatcher(this);
+        this.moveAnalysis = new MoveAnalysis(this);
         this.options = options;
     }
 
@@ -969,6 +979,32 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
             int z = level().getRandom().nextInt(options.bloodDiameter) - radius;
             BloodEntity.place(bloodEntityType, level(), blockPosition().offset(x, 0, z));
         }
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        if (
+            options.slapItemChance > 0 &&
+                target instanceof LivingEntity living &&
+                !level().isClientSide &&
+                getRandom().nextFloat() < options.slapItemChance
+        ) {
+            // TODO(acats) tail attack for item slap
+
+            if (target instanceof Player player) {
+                player.drop(player.getInventory().getSelected(), false);
+                player.getInventory().setItem(player.getInventory().selected, ItemStack.EMPTY);
+            } else if (living instanceof Mob mob) {
+                drop(mob, mob.getMainHandItem());
+                mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.AIR));
+            }
+            living.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
+        }
+
+        if (options.healsOnHit) {
+            heal(1.0833f);
+        }
+        return super.doHurtTarget(target);
     }
 
 }

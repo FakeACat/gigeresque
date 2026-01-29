@@ -16,8 +16,6 @@ public class ClimbingManager {
 
     private final AlienEntity alien;
 
-    public boolean canClimb;
-
     public float climbSpeedMultiplier = 1;
 
     public final EntityDataAccessor<Boolean> isClimbingEDA;
@@ -66,7 +64,7 @@ public class ClimbingManager {
     }
 
     public void tick() {
-        if (!canClimb || alien.stasisManager.isStasis()) {
+        if (!alien.options.canClimb() || alien.stasisManager.isStasis()) {
             climbing = false;
             return;
         }

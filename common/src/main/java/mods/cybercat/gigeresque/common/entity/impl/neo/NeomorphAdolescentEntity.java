@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -14,7 +13,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
@@ -35,9 +33,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphAdolescentEntity extends AlienEntity {
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.neomorph(1));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(entityType, world, Options.neomorph(1, 0, true));
         this.vibrationUser = new AzureVibrationUser(this, 2.65F);
         this.animationSelector = GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR;
     }
@@ -64,28 +60,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentAttackDamage + 5
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public boolean doHurtTarget(@NotNull Entity target) {
-        if (
-            target instanceof LivingEntity livingEntity && !this.level().isClientSide && this.getRandom()
-                .nextInt(
-                    0,
-                    10
-                ) > 7
-        ) {
-            livingEntity.hurt(
-                damageSources().mobAttack(this),
-                this.getRandom().nextInt(4) > 2
-                    ? CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentXenoTailAttackDamage
-                    : 0.0f
-            );
-            this.heal(1.0833f);
-            return super.doHurtTarget(target);
-        }
-        this.heal(1.0833f);
-        return super.doHurtTarget(target);
     }
 
     /*

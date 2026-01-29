@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -23,7 +22,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCre
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -35,9 +33,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
-        options = Options.neomorph(1);
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        options = Options.neomorph(1, 0.1f, false);
         this.vibrationUser = new AzureVibrationUser(this, 1.0F);
         this.animationSelector = GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR;
     }

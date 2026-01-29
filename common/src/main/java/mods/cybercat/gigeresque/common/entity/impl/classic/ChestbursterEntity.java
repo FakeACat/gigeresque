@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import mod.azure.azurelib.common.util.MoveAnalysis;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -27,7 +26,6 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
-import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
@@ -39,9 +37,7 @@ public class ChestbursterEntity extends AlienEntity {
     protected String hostId = null;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
-        super(type, world, Options.standardAlien(1));
-        this.animationDispatcher = new AnimationDispatcher(this);
-        this.moveAnalysis = new MoveAnalysis(this);
+        super(type, world, Options.standardAlien(1, false, 0));
         this.vibrationUser = new AzureVibrationUser(this, 0.0F);
         this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
     }
