@@ -43,8 +43,7 @@ public class AquaticAlienEntity extends AlienEntity {
     public int killCounter;
 
     public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, Options.standardAlien(3, false, 0.1f));
-        this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
+        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.1f));
     }
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {

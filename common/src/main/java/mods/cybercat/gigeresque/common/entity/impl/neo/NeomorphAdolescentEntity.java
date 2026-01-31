@@ -33,9 +33,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphAdolescentEntity extends AlienEntity {
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.neomorph(1, 0, true));
-        this.vibrationUser = new AzureVibrationUser(this, 2.65F);
-        this.animationSelector = GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR;
+        super(entityType, world, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR, Options.neomorph(1, 0, true));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

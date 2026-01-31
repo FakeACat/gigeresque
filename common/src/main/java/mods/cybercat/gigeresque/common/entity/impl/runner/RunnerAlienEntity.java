@@ -28,9 +28,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RunnerAlienEntity extends AlienEntity {
 
     public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, Options.standardAlien(3, true, 0.1f));
-        this.vibrationUser = new AzureVibrationUser(this, 1.5f);
-        this.animationSelector = GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR;
+        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

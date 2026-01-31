@@ -29,7 +29,6 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCre
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 import mods.cybercat.gigeresque.common.tags.GigTags;
@@ -38,9 +37,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class PopperEntity extends AlienEntity {
 
     public PopperEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, Options.gooMutant(1, false, 0, false));
-        this.vibrationUser = new AzureVibrationUser(this, 0.9F);
-        this.animationSelector = GigMeleeAttackSelector.POPPER_SELECTOR;
+        super(entityType, world, GigMeleeAttackSelector.POPPER_SELECTOR, Options.gooMutant(1, false, 0, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

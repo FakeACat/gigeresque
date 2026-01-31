@@ -225,7 +225,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public float growthCounter = 0;
 
-    protected User vibrationUser;
+    protected final User vibrationUser;
 
     private Data vibrationData;
 
@@ -241,7 +241,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public final StasisManager stasisManager;
 
-    public AnimationSelector<AlienEntity> animationSelector;
+    public final @Nullable AnimationSelector<AlienEntity> animationSelector;
 
     private final AlienNavigationManager navigationManager;
 
@@ -249,13 +249,18 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public final ClimbingManager climbingManager;
 
-    protected AlienEntity(EntityType<? extends Monster> entityType, Level level, Options options) {
+    protected AlienEntity(
+        EntityType<? extends Monster> entityType,
+        Level level,
+        @Nullable AnimationSelector<AlienEntity> animationSelector,
+        Options options
+    ) {
         super(entityType, level);
         this.noCulling = true;
         this.crawlingManager = new CrawlingManager(this, IS_CRAWLING);
         this.searchingManager = new SearchingManager(this, IS_SEARCHING);
         this.stasisManager = new StasisManager(this, IS_STASIS, STASIS_TICK);
-        this.vibrationUser = new AzureVibrationUser(this, 1.0F);
+        this.vibrationUser = new AzureVibrationUser(this);
         this.vibrationData = new Data();
         this.dynamicGameEventListener = new DynamicGameEventListener<>(new Listener(this));
         this.navigationManager = new AlienNavigationManager(this);
@@ -269,6 +274,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         );
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
+        this.animationSelector = animationSelector;
         this.options = options;
     }
 

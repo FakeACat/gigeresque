@@ -36,13 +36,20 @@ import mods.cybercat.gigeresque.common.entity.helper.*;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 public class RunnerbursterEntity extends ChestbursterEntity {
 
     public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
-        this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
-        this.vibrationUser = new AzureVibrationUser(this, 1.0F);
+    }
+
+    public RunnerbursterEntity(
+        EntityType<? extends RunnerbursterEntity> type,
+        Level level,
+        AnimationSelector<AlienEntity> animationSelector
+    ) {
+        super(type, level, animationSelector);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

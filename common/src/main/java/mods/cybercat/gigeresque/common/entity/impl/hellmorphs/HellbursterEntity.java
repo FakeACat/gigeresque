@@ -8,16 +8,12 @@ import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
-import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 
 public class HellbursterEntity extends RunnerbursterEntity {
 
     public HellbursterEntity(EntityType<? extends HellbursterEntity> type, Level level) {
         super(type, level);
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-        this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

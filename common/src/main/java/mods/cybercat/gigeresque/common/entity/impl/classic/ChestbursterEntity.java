@@ -26,20 +26,26 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
+import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 public class ChestbursterEntity extends AlienEntity {
 
     protected String hostId = null;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
-        super(type, world, Options.standardAlien(1, false, 0));
-        this.vibrationUser = new AzureVibrationUser(this, 0.0F);
-        this.animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
+        super(type, world, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR, Options.standardAlien(1, false, 0));
+    }
+
+    public ChestbursterEntity(
+        EntityType<? extends ChestbursterEntity> type,
+        Level world,
+        AnimationSelector<AlienEntity> animationSelector
+    ) {
+        super(type, world, animationSelector, Options.standardAlien(1, false, 0));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

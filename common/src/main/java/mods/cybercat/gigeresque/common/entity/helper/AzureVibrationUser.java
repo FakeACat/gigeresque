@@ -28,14 +28,11 @@ public class AzureVibrationUser implements VibrationSystem.User {
 
     private final AlienEntity mob;
 
-    private final float moveSpeed;
-
     private final PositionSource positionSource;
 
-    public AzureVibrationUser(AlienEntity entity, float speed) {
+    public AzureVibrationUser(AlienEntity entity) {
         this.positionSource = new EntityPositionSource(entity, entity.getEyeHeight());
         this.mob = entity;
-        this.moveSpeed = speed;
     }
 
     @Override

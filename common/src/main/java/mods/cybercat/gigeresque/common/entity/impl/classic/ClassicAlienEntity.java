@@ -41,20 +41,14 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.BuildNestGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.nest.EggmorphGoal;
-import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
-/**
- * TODO: Ensure crawling works good
- */
 public class ClassicAlienEntity extends AlienEntity {
 
     public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
-        super(type, world, Options.standardAlien(3, true, 0.1f));
-        this.vibrationUser = new AzureVibrationUser(this, 1.5f);
-        this.animationSelector = GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR;
+        super(type, world, GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f));
     }
 
     /*
