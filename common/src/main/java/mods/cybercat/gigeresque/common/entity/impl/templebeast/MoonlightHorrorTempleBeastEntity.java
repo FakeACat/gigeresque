@@ -58,12 +58,6 @@ public class MoonlightHorrorTempleBeastEntity extends AlienEntity {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.update();
-    }
-
-    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new StrollAroundInWaterGoal(this, 0.8));
         this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.8));

@@ -130,7 +130,6 @@ public class AquaticAlienEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        this.moveAnalysis.update();
         // if (!this.level().isClientSide())
         // AzureLib.LOGGER.info(this.killCounter);
         if (this.killCounter >= 3) {

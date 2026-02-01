@@ -52,7 +52,7 @@ public class AlienEggEntity extends AlienEntity {
     public int hatchedOpenTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
-        super(type, world, null, new Options(BloodType.NONE, 0, false, 0, false));
+        super(type, world, e -> {}, new Options(BloodType.NONE, 0, false, 0, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

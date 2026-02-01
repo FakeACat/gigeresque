@@ -101,7 +101,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.update();
 
         if (!this.level().isClientSide) {
             var radius = this.getBoundingBox().inflate(1.25D);

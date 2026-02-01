@@ -75,12 +75,6 @@ public class RunnerAlienEntity extends AlienEntity {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        this.moveAnalysis.update();
-    }
-
-    @Override
     public boolean isPathFinding() {
         return false;
     }

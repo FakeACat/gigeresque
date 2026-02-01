@@ -241,7 +241,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public final StasisManager stasisManager;
 
-    public final @Nullable AnimationSelector<AlienEntity> animationSelector;
+    // NOTE(acats) this is a little unintuitive so maybe worth changing? it is a functional interface that, when called,
+    // is supposed to set the attacking animation to whatever is correct for the current context. there is probably a
+    // better way to do this
+    public final AnimationSelector<AlienEntity> animationSelector;
 
     private final AlienNavigationManager navigationManager;
 
@@ -252,7 +255,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     protected AlienEntity(
         EntityType<? extends Monster> entityType,
         Level level,
-        @Nullable AnimationSelector<AlienEntity> animationSelector,
+        AnimationSelector<AlienEntity> animationSelector,
         Options options
     ) {
         super(entityType, level);
@@ -585,6 +588,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         if (this.tickCount % 10 == 0) {
             this.refreshDimensions();
         }
+
+        moveAnalysis.update();
     }
 
     @Override

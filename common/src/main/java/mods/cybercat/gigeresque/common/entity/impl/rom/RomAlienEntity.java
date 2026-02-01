@@ -73,7 +73,6 @@ public class RomAlienEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.update();
         if (!this.isVehicle())
             this.setIsExecuting(false);
     }

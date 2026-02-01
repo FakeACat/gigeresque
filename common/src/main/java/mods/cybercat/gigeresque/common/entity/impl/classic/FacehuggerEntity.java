@@ -211,7 +211,6 @@ public class FacehuggerEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.update();
         this.setGrowth(0);
 
         if (

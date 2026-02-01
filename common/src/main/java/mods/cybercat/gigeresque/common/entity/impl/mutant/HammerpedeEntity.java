@@ -57,12 +57,6 @@ public class HammerpedeEntity extends AlienEntity {
             );
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.update();
-    }
-
     /**
      * TODO: Add Panic Goal when ready
      */

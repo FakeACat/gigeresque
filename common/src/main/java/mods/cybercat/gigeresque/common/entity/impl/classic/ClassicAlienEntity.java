@@ -86,7 +86,6 @@ public class ClassicAlienEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.update();
         crawlingManager.tick();
 
         if (!this.isVehicle()) {

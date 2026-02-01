@@ -94,12 +94,6 @@ public class StalkerEntity extends AlienEntity {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.update();
-    }
-
-    @Override
     public void die(@NotNull DamageSource source) {
         if (!this.level().isClientSide && this.random.nextInt(5) == 0) {
             BlockPos.betweenClosedStream(this.getBoundingBox().inflate(10)).forEach(pos -> {

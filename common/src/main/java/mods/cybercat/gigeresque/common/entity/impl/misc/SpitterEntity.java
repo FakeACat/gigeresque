@@ -94,12 +94,6 @@ public class SpitterEntity extends AlienEntity {
         );
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.update();
-    }
-
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(

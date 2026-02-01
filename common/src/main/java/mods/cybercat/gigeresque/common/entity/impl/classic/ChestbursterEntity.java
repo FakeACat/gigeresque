@@ -90,7 +90,6 @@ public class ChestbursterEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        moveAnalysis.update();
 
         if (this.isBirthed() && this.tickCount > 1200 && this.getGrowth() > 200)
             this.setBirthStatus(false);

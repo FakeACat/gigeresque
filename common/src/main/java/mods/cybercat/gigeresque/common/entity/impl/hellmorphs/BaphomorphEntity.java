@@ -55,12 +55,6 @@ public class BaphomorphEntity extends AlienEntity {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        moveAnalysis.update();
-    }
-
-    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FleeExplodingCreeperGoal(this));
         this.goalSelector.addGoal(0, new DodgeProjectilesGoal(this));
