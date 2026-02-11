@@ -134,11 +134,6 @@ public class AlienEggEntity extends AlienEntity {
     }
 
     @Override
-    protected EntityDimensions swimmingDimensions(Pose pose) {
-        return null;
-    }
-
-    @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.EGG_NOTICE.get();
     }

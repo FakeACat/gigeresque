@@ -50,7 +50,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.function.BiConsumer;
@@ -118,6 +117,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         }
     }
 
+    // TODO(acats) make final
     public Options options;
 
     public static final EntityDataAccessor<BlockPos> HOME_BLOCKPOS = SynchedEntityData.defineId(
@@ -315,7 +315,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     @Override
     public float maxUpStep() {
-        return 1.5f;
+        return 2.0f;
     }
 
     @Override
@@ -920,37 +920,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     @Override
     protected @NotNull EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
-        EntityDimensions dims = null;
-
-        if (isUnderWater()) {
-            dims = swimmingDimensions(pose);
-        } else if (climbingManager.climbing) {
-            dims = climbingDimensions(pose);
-        } else if (crawlingManager.isCrawling()) {
-            dims = crawlingDimensions(pose);
+        if (isUnderWater() || climbingManager.climbing || crawlingManager.isCrawling()) {
+            return EntityDimensions.scalable(0.75f, 0.75f);
         }
-
-        if (dims == null) {
-            dims = standingDimensions(pose);
-        }
-        return dims;
-    }
-
-    protected @NotNull EntityDimensions standingDimensions(Pose pose) {
         return super.getDefaultDimensions(pose);
-    }
-
-    protected abstract @Nullable EntityDimensions swimmingDimensions(Pose pose);
-
-    protected @Nullable EntityDimensions crawlingDimensions(Pose pose) {
-        var standing = standingDimensions(pose);
-        return EntityDimensions.scalable(standing.width(), Math.min(standing.height(), 0.4f));
-    }
-
-    protected @Nullable EntityDimensions climbingDimensions(Pose pose) {
-        // this should be reasonable for most aliens
-        // it needs to be smaller than 1x1 for climbing to work correctly
-        return EntityDimensions.scalable(0.75f, 0.75f);
     }
 
     public void bleed(DamageSource source) {

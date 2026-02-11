@@ -13,7 +13,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -167,11 +166,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
             delayBeforeEating--;
             this.triggeredAttackAnimation = false;
         }
-    }
-
-    @Override
-    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return null;
     }
 
 }

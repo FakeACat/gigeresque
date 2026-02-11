@@ -1,9 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.hellmorphs;
 
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -12,7 +10,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -93,11 +90,6 @@ public class HellmorphRunnerEntity extends AlienEntity {
     @Override
     public boolean fireImmune() {
         return true;
-    }
-
-    @Override
-    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return null;
     }
 
 }

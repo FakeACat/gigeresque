@@ -6,11 +6,9 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -76,11 +74,6 @@ public class ClassicAlienEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.classicXenoConfigs.classicXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    protected EntityDimensions swimmingDimensions(Pose pose) {
-        return EntityDimensions.scalable(2, 1);
     }
 
     @Override

@@ -1,11 +1,8 @@
 package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
@@ -24,11 +21,6 @@ public class AquaticChestbursterEntity extends ChestbursterEntity {
             entity.setCustomName(this.getCustomName());
 
         return entity;
-    }
-
-    @Override
-    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return standingDimensions(pose).scale(1, 0.5f);
     }
 
 }

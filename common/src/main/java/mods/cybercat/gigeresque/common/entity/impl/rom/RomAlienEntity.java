@@ -66,11 +66,6 @@ public class RomAlienEntity extends AlienEntity {
     }
 
     @Override
-    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return EntityDimensions.scalable(3.0f, 1.0f);
-    }
-
-    @Override
     public void tick() {
         super.tick();
         if (!this.isVehicle())

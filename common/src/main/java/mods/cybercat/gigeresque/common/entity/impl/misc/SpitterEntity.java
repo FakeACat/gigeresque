@@ -1,11 +1,9 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -105,11 +103,6 @@ public class SpitterEntity extends AlienEntity {
         if (spawnType != MobSpawnType.NATURAL)
             setGrowth(getMaxGrowth());
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
-    }
-
-    @Override
-    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return EntityDimensions.scalable(3.0f, 1.0f);
     }
 
 }

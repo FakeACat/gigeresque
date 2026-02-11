@@ -3,11 +3,9 @@ package mods.cybercat.gigeresque.common.entity.impl.aqua;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -73,11 +71,6 @@ public class AquaticAlienEntity extends AlienEntity {
     @Override
     public float getGrowthMultiplier() {
         return CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier;
-    }
-
-    @Override
-    protected @Nullable EntityDimensions swimmingDimensions(Pose pose) {
-        return EntityDimensions.scalable(2.0f, 1.0f);
     }
 
     @Nullable
