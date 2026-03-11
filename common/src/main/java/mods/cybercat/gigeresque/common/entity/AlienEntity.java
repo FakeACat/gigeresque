@@ -89,11 +89,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         int bloodDiameter,
         boolean canClimb,
         float slapItemChance,
-        boolean healsOnHit
+        boolean healsOnHit,
+        boolean canCrawl
     ) {
 
-        public static Options standardAlien(int bloodDiameter, boolean canClimb, float slapItemChance) {
-            return new Options(BloodType.ACID, bloodDiameter, canClimb, slapItemChance, true);
+        public static Options standardAlien(int bloodDiameter, boolean canClimb, float slapItemChance, boolean canCrawl) {
+            return new Options(BloodType.ACID, bloodDiameter, canClimb, slapItemChance, true, canCrawl);
         }
 
         public static Options gooMutant(int bloodDiameter, boolean canClimb, float slapItemChance, boolean healsOnHit) {
@@ -102,7 +103,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
                 bloodDiameter,
                 canClimb,
                 slapItemChance,
-                healsOnHit
+                healsOnHit,
+                false
             );
         }
 
@@ -112,7 +114,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
                 bloodDiameter,
                 false,
                 slapItemChance,
-                healsOnHit
+                healsOnHit,
+                false
             );
         }
     }
@@ -590,6 +593,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         }
 
         moveAnalysis.update();
+        if (options.canCrawl) {
+            crawlingManager.tick();
+        }
     }
 
     @Override

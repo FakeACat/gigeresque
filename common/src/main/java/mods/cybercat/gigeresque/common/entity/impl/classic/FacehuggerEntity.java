@@ -56,7 +56,7 @@ public class FacehuggerEntity extends AlienEntity {
     public float ticksAttachedToHost = -1.0f;
 
     public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, GigMeleeAttackSelector.HUGGER_SELECTOR, new Options(BloodType.ACID, 1, true, 0, false));
+        super(type, world, GigMeleeAttackSelector.HUGGER_SELECTOR, new Options(BloodType.ACID, 1, true, 0, false, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -34,7 +34,7 @@ public class ChestbursterEntity extends AlienEntity {
     protected String hostId = null;
 
     public ChestbursterEntity(EntityType<? extends ChestbursterEntity> type, Level world) {
-        super(type, world, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR, Options.standardAlien(1, false, 0));
+        super(type, world, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR, Options.standardAlien(1, false, 0, false));
     }
 
     public ChestbursterEntity(
@@ -42,7 +42,7 @@ public class ChestbursterEntity extends AlienEntity {
         Level world,
         AnimationSelector<AlienEntity> animationSelector
     ) {
-        super(type, world, animationSelector, Options.standardAlien(1, false, 0));
+        super(type, world, animationSelector, Options.standardAlien(1, false, 0, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

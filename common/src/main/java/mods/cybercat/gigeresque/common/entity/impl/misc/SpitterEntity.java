@@ -37,7 +37,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class SpitterEntity extends AlienEntity {
 
     public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.1f));
+        super(entityType, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.1f, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

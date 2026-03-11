@@ -28,7 +28,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RunnerAlienEntity extends AlienEntity {
 
     public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f));
+        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

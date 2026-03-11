@@ -35,7 +35,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RomAlienEntity extends AlienEntity {
 
     public RomAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
-        super(type, world, GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f));
+        super(type, world, GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f, true));
     }
 
     /**

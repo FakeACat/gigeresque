@@ -29,7 +29,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class DraconicTempleBeastEntity extends AlienEntity {
 
     public DraconicTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(entityType, level, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.2f));
+        super(entityType, level, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.2f, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
