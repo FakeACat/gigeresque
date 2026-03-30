@@ -4,7 +4,6 @@ import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.client.entity.model.EntityModels;
@@ -22,13 +21,13 @@ public class AquaEggEntityRender extends AzEntityRenderer<AquaEggEntity> {
                 EntityTextures.AQUA_EGG
             )
                 .setDeathMaxRotation(0.0F)
-                .setScale(
-                    entity -> Mth.clamp(
-                        0.2f + 0.8f * (entity.getGrowth() / entity.getMaxGrowth()),
-                        0.2f,
-                        1.0f
-                    )
-                )
+                // .setScale(
+                // entity -> Mth.clamp(
+                // 0.2f + 0.8f * (entity.getGrowth() / entity.getMaxGrowth()),
+                // 0.2f,
+                // 1.0f
+                // )
+                // )
                 .build(),
             context
         );

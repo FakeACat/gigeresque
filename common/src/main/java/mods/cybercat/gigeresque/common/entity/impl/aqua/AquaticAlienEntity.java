@@ -2,11 +2,8 @@ package mods.cybercat.gigeresque.common.entity.impl.aqua;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -14,9 +11,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -41,7 +36,18 @@ public class AquaticAlienEntity extends AlienEntity {
     public int killCounter;
 
     public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.1f, false));
+        super(
+            type,
+            world,
+            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
+            Options.standardAlien(
+                3,
+                false,
+                0.1f,
+                false,
+                GrowthOptions.adult(CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier)
+            )
+        );
     }
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {
@@ -66,24 +72,6 @@ public class AquaticAlienEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public float getGrowthMultiplier() {
-        return CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier;
-    }
-
-    @Nullable
-    @Override
-    public SpawnGroupData finalizeSpawn(
-        @NotNull ServerLevelAccessor level,
-        @NotNull DifficultyInstance difficulty,
-        @NotNull MobSpawnType spawnType,
-        @Nullable SpawnGroupData spawnGroupData
-    ) {
-        if (spawnType != MobSpawnType.NATURAL)
-            setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override

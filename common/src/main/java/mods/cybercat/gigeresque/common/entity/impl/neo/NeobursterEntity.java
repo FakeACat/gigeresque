@@ -31,8 +31,17 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeobursterEntity extends RunnerbursterEntity {
 
     public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
-        super(type, level, GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR);
-        options = Options.neomorph(1, 0.1f, false);
+        super(type, level);
+        animationSelector = GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR;
+        options = Options.neomorph(
+            1,
+            0.1f,
+            false,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                prev -> GigEntities.NEOMORPH_ADOLESCENT.get().create(prev.level())
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -57,19 +66,6 @@ public class NeobursterEntity extends RunnerbursterEntity {
                 CommonMod.config.entityConfigs.neobursterConfigs.neobursterAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    /*
-     * GROWTH
-     */
-    @Override
-    public float getGrowthMultiplier() {
-        return CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier;
-    }
-
-    @Override
-    public LivingEntity growInto() {
-        return GigEntities.NEOMORPH_ADOLESCENT.get().create(level());
     }
 
     @Override

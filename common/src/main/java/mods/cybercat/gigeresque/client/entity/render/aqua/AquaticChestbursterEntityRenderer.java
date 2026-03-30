@@ -26,7 +26,7 @@ public class AquaticChestbursterEntityRenderer extends AzEntityRenderer<AquaticC
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.1F)
                 .addRenderLayer(new BloodAzLayer<>())
-                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
+                .setScale(burster -> 1.0f + burster.growthProgress())
                 .build(),
             context
         );

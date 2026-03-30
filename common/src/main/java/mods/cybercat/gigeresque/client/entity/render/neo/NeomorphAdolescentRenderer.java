@@ -27,7 +27,7 @@ public class NeomorphAdolescentRenderer extends AzEntityRenderer<NeomorphAdolesc
                 })
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
-                .setScale(neoEntity -> 1.0f + (neoEntity.getGrowth() / neoEntity.getMaxGrowth()) / 5f)
+                .setScale(adolescent -> 1.0f + adolescent.growthProgress() / 5f)
                 .build(),
             context
         );

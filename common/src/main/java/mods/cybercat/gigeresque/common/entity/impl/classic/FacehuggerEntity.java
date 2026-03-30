@@ -56,7 +56,20 @@ public class FacehuggerEntity extends AlienEntity {
     public float ticksAttachedToHost = -1.0f;
 
     public FacehuggerEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, GigMeleeAttackSelector.HUGGER_SELECTOR, new Options(BloodType.ACID, 1, true, 0, false, false));
+        super(
+            type,
+            world,
+            GigMeleeAttackSelector.HUGGER_SELECTOR,
+            new Options(
+                BloodType.ACID,
+                1,
+                true,
+                0,
+                false,
+                false,
+                GrowthOptions.NO_GROWTH
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -208,7 +221,8 @@ public class FacehuggerEntity extends AlienEntity {
     @Override
     public void tick() {
         super.tick();
-        this.setGrowth(0);
+        // TODO(acats) figure out why we do this
+        setGrowthTimeTicks(0);
 
         if (
             this.getTarget() != null && !this.getTarget().getUseItem().is(Items.SHIELD) && this.getBoundingBox()

@@ -28,7 +28,7 @@ public class RunnerbursterEntityRenderer extends AzEntityRenderer<RunnerbursterE
                 .setDeathMaxRotation(0.0F)
                 .addRenderLayer(new BloodAzLayer<>())
                 .setShadowRadius(0.3F)
-                .setScale(bursterEntity -> 1.0f + (bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()))
+                .setScale(burster -> 1.0f + burster.growthProgress())
                 .build(),
             context
         );

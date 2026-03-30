@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.runner;
 
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -9,9 +8,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -28,7 +24,18 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RunnerAlienEntity extends AlienEntity {
 
     public RunnerAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, true, 0.1f, false));
+        super(
+            type,
+            world,
+            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
+            Options.standardAlien(
+                3,
+                true,
+                0.1f,
+                false,
+                GrowthOptions.adult(CommonMod.config.entityConfigs.runnerbusterConfigs.runnerAlienGrowthMultiplier)
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -50,23 +57,6 @@ public class RunnerAlienEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.runnerConfigs.runnerXenoAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    @Override
-    public float getGrowthMultiplier() {
-        return CommonMod.config.entityConfigs.runnerbusterConfigs.runnerAlienGrowthMultiplier;
-    }
-
-    @Override
-    public SpawnGroupData finalizeSpawn(
-        @NotNull ServerLevelAccessor level,
-        @NotNull DifficultyInstance difficulty,
-        @NotNull MobSpawnType spawnType,
-        @Nullable SpawnGroupData spawnGroupData
-    ) {
-        if (spawnType != MobSpawnType.NATURAL)
-            setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override

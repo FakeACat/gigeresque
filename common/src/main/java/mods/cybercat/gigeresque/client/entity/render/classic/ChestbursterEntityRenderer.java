@@ -26,7 +26,7 @@ public class ChestbursterEntityRenderer extends AzEntityRenderer<ChestbursterEnt
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.1F)
                 .addRenderLayer(new BloodAzLayer<>())
-                .setScale(bursterEntity -> 1.0f + ((bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()) / 4.0f))
+                .setScale(burster -> 1.0f + burster.growthProgress() / 4.0f)
                 .build(),
             context
         );

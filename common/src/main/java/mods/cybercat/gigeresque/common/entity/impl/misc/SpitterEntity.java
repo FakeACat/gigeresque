@@ -1,10 +1,7 @@
 package mods.cybercat.gigeresque.common.entity.impl.misc;
 
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -13,9 +10,6 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -37,7 +31,18 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class SpitterEntity extends AlienEntity {
 
     public SpitterEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.1f, false));
+        super(
+            entityType,
+            world,
+            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
+            Options.standardAlien(
+                3,
+                false,
+                0.1f,
+                false,
+                GrowthOptions.NO_GROWTH // TODO(acats) maybe add growth
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -90,19 +95,6 @@ public class SpitterEntity extends AlienEntity {
                 target -> this.getHealth() > (this.getMaxHealth() / 2) && GigEntityUtils.isValidTarget(target)
             )
         );
-    }
-
-    @Nullable
-    @Override
-    public SpawnGroupData finalizeSpawn(
-        @NotNull ServerLevelAccessor level,
-        @NotNull DifficultyInstance difficulty,
-        @NotNull MobSpawnType spawnType,
-        @Nullable SpawnGroupData spawnGroupData
-    ) {
-        if (spawnType != MobSpawnType.NATURAL)
-            setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
 }

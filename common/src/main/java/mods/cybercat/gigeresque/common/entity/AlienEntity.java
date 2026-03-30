@@ -19,6 +19,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -50,9 +52,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
@@ -61,13 +65,14 @@ import mods.cybercat.gigeresque.common.entity.helper.AnimationDispatcher;
 import mods.cybercat.gigeresque.common.entity.helper.AzureTicker;
 import mods.cybercat.gigeresque.common.entity.helper.AzureVibrationUser;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
-import mods.cybercat.gigeresque.common.entity.helper.Growable;
 import mods.cybercat.gigeresque.common.entity.helper.managers.AlienNavigationManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.ClimbingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
 import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
+import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -76,12 +81,30 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
-public abstract class AlienEntity extends Monster implements VibrationSystem, Growable, AbstractAlien {
+public abstract class AlienEntity extends Monster implements VibrationSystem, AbstractAlien {
 
     public enum BloodType {
         NONE,
         ACID,
         GOO
+    }
+
+    public record GrowthOptions(
+        int maxGrowthTimeTicks,
+        @Nullable Function<AlienEntity, AlienEntity> createNext,
+        boolean spawnFullyGrown
+    ) {
+
+        public static final GrowthOptions NO_GROWTH = new GrowthOptions(0, null, true);
+
+        public static GrowthOptions adult(float growthMultiplier) {
+            return new GrowthOptions((int) ((float) 6000 / growthMultiplier), null, true);
+        }
+
+        public static GrowthOptions immature(float growthMultiplier, Function<AlienEntity, AlienEntity> createNext) {
+            return new GrowthOptions((int) ((float) 6000 / growthMultiplier), createNext, false);
+        }
+
     }
 
     public record Options(
@@ -90,32 +113,59 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         boolean canClimb,
         float slapItemChance,
         boolean healsOnHit,
-        boolean canCrawl
+        boolean canCrawl,
+        GrowthOptions growth
     ) {
 
-        public static Options standardAlien(int bloodDiameter, boolean canClimb, float slapItemChance, boolean canCrawl) {
-            return new Options(BloodType.ACID, bloodDiameter, canClimb, slapItemChance, true, canCrawl);
+        public static Options standardAlien(
+            int bloodDiameter,
+            boolean canClimb,
+            float slapItemChance,
+            boolean canCrawl,
+            GrowthOptions growthOptions
+        ) {
+            return new Options(
+                BloodType.ACID,
+                bloodDiameter,
+                canClimb,
+                slapItemChance,
+                true,
+                canCrawl,
+                growthOptions
+            );
         }
 
-        public static Options gooMutant(int bloodDiameter, boolean canClimb, float slapItemChance, boolean healsOnHit) {
+        public static Options gooMutant(
+            int bloodDiameter,
+            boolean canClimb,
+            float slapItemChance,
+            boolean healsOnHit
+        ) {
             return new Options(
                 CommonMod.config.entityConfigs.gooMutantBloodType,
                 bloodDiameter,
                 canClimb,
                 slapItemChance,
                 healsOnHit,
-                false
+                false,
+                GrowthOptions.NO_GROWTH
             );
         }
 
-        public static Options neomorph(int bloodDiameter, float slapItemChance, boolean healsOnHit) {
+        public static Options neomorph(
+            int bloodDiameter,
+            float slapItemChance,
+            boolean healsOnHit,
+            GrowthOptions growthOptions
+        ) {
             return new Options(
                 CommonMod.config.entityConfigs.neomorphBloodType,
                 bloodDiameter,
                 false,
                 slapItemChance,
                 healsOnHit,
-                false
+                false,
+                growthOptions
             );
         }
     }
@@ -158,9 +208,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         EntityDataSerializers.INT
     );
 
-    protected static final EntityDataAccessor<Float> GROWTH = SynchedEntityData.defineId(
+    protected static final EntityDataAccessor<Integer> GROWTH_TIME_TICKS = SynchedEntityData.defineId(
         AlienEntity.class,
-        EntityDataSerializers.FLOAT
+        EntityDataSerializers.INT
     );
 
     protected static final EntityDataAccessor<Boolean> IS_HISSING = SynchedEntityData.defineId(
@@ -186,11 +236,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     public static final EntityDataAccessor<Integer> STASIS_TICK = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.INT
-    );
-
-    public static final EntityDataAccessor<Boolean> IS_BIRTHED = SynchedEntityData.defineId(
-        AlienEntity.class,
-        EntityDataSerializers.BOOLEAN
     );
 
     private static final EntityDataAccessor<Boolean> IS_CLIMBING = SynchedEntityData.defineId(
@@ -226,8 +271,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public int wakeupCounter = 0;
 
-    public float growthCounter = 0;
-
     protected final User vibrationUser;
 
     private Data vibrationData;
@@ -247,7 +290,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     // NOTE(acats) this is a little unintuitive so maybe worth changing? it is a functional interface that, when called,
     // is supposed to set the attacking animation to whatever is correct for the current context. there is probably a
     // better way to do this
-    public final AnimationSelector<AlienEntity> animationSelector;
+    // TODO(acats) make final
+    public AnimationSelector<AlienEntity> animationSelector;
 
     private final AlienNavigationManager navigationManager;
 
@@ -255,8 +299,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
 
     public final ClimbingManager climbingManager;
 
-    protected AlienEntity(
-        EntityType<? extends Monster> entityType,
+    public AlienEntity(
+        EntityType<? extends AlienEntity> entityType,
         Level level,
         AnimationSelector<AlienEntity> animationSelector,
         Options options
@@ -386,22 +430,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         entityData.set(IS_HISSING, isHissing);
     }
 
-    public boolean isBirthed() {
-        return this.entityData.get(IS_BIRTHED);
+    public int growthTimeTicks() {
+        return entityData.get(GROWTH_TIME_TICKS);
     }
 
-    public void setBirthStatus(boolean birth) {
-        this.entityData.set(IS_BIRTHED, birth);
-    }
-
-    @Override
-    public float getGrowth() {
-        return entityData.get(GROWTH);
-    }
-
-    @Override
-    public void setGrowth(float growth) {
-        entityData.set(GROWTH, growth);
+    public void setGrowthTimeTicks(int ticks) {
+        entityData.set(GROWTH_TIME_TICKS, ticks);
     }
 
     public float getCarryDamage() {
@@ -430,12 +464,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
         builder.define(FLEEING_FIRE, false);
         builder.define(STATE, 0);
         builder.define(CLIENT_ANGER_LEVEL, 0);
-        builder.define(GROWTH, 0.0f);
+        builder.define(GROWTH_TIME_TICKS, 0);
         builder.define(WAKING_UP, false);
         builder.define(IS_HISSING, false);
         builder.define(IS_EXECUTION, false);
         builder.define(IS_HEADBITE, false);
-        builder.define(IS_BIRTHED, false);
         // MOVED
         builder.define(IS_STASIS, false);
         builder.define(IS_SEARCHING, false);
@@ -457,12 +490,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
                 CommonMod.LOGGER::error
             )
             .ifPresent(tag -> compound.put("listener", tag));
-        compound.putFloat("growth", this.getGrowth());
+        compound.putInt("growthTimeTicks", growthTimeTicks());
         compound.putBoolean("wakingup", this.isWakingUp());
         compound.putBoolean("isHissing", this.isHissing());
         compound.putBoolean("isExecuting", this.isExecuting());
         compound.putBoolean("isHeadBite", this.isBiting());
-        compound.putBoolean("is_birthed", isBirthed());
         compound.putFloat("carry_damage", this.getCarryDamage());
         BlockPos homeBlock = this.getHomeBlock();
         if (homeBlock != null) {
@@ -487,16 +519,13 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
                     CommonMod.LOGGER::error
                 )
                 .ifPresent(data -> this.vibrationData = data);
-        this.setGrowth(compound.getFloat("growth"));
+        setGrowthTimeTicks(compound.getInt("growthTimeTicks")); // TODO(acats) translate old value
         this.setIsHissing(compound.getBoolean("isHissing"));
         this.setIsBiting(compound.getBoolean(("isHeadBite")));
         this.setIsExecuting(compound.getBoolean("isExecuting"));
         this.setIsExecuting(compound.getBoolean("isHeadBite"));
         this.setWakingUpStatus(compound.getBoolean("wakingup"));
         this.setCarryDamage(compound.getFloat("carry_damage"));
-        if (compound.contains("is_birthed")) {
-            this.setBirthStatus(compound.getBoolean("is_birthed"));
-        }
         if (compound.contains("homeBlock")) {
             this.setHomeBlock(
                 NbtUtils.readBlockPos(compound, "homeBlock").orElse(BlockPos.ZERO)
@@ -539,23 +568,35 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
             if (CommonMod.config.generalConfigs.enablePeacefulModeRemoval && level().getDifficulty() == Difficulty.PEACEFUL) {
                 this.remove(RemovalReason.DISCARDED);
             }
-            if (this.getGrowth() <= this.getMaxGrowth() && this.tickCount % Constants.TPS == 0) {
-                if (CommonMod.config.generalConfigs.enableLogging && this.getGrowth() > 0) {
-                    CommonMod.LOGGER.warn(
-                        "Current Growth: {} of {} located at {}",
-                        this.getGrowth(),
-                        this.getDisplayName().getString(),
-                        this.blockPosition()
-                    );
+
+            if (growthTimeTicks() < options.growth.maxGrowthTimeTicks) {
+                setGrowthTimeTicks(growthTimeTicks() + 1);
+            } else if (options.growth.createNext == null) {
+                // unique case where the growth multiplier is decreased so the alien ends up with a growth time greater
+                // than the maximum
+                setGrowthTimeTicks(options.growth.maxGrowthTimeTicks);
+            } else {
+                var newEntity = options.growth.createNext.apply(this);
+                assert newEntity != null;
+                newEntity.setPos(getX(), getY(), getZ());
+                // TODO(acats) fix these special cases in a less hacky way
+                if (this instanceof ChestbursterEntity chestburster && newEntity instanceof RunnerbursterEntity runnerburster) {
+                    runnerburster.setHostId(chestburster.getHostId());
                 }
-                this.growthCounter++;
-                this.setGrowth((this.getGrowth() + 1) * getGrowthMultiplier());
-            } else if (this.getGrowth() >= this.getMaxGrowth()) {
-                this.growUp(this);
+                level().addFreshEntity(newEntity);
+                if (hasCustomName()) {
+                    newEntity.setCustomName(getCustomName());
+                }
+                for (var effect : getActiveEffects()) {
+                    addEffect(new MobEffectInstance(effect));
+                }
+                remove(Entity.RemovalReason.DISCARDED);
             }
+
             if (!this.isVehicle()) {
                 this.setCarryDamage(0.0f);
             }
+
             if (this.getHealth() != this.getMaxHealth() && this.getTarget() == null && this.tickCount % 20 == 0) {
                 healCounter++;
                 if (CommonMod.config.generalConfigs.enableLogging) {
@@ -583,11 +624,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
                     this.lastHurt = 0;
                 }
             }
+
             if (this.isExecuting()) {
                 this.navigation.stop();
             }
+
             AzureTicker.tick(serverLevel, this.vibrationData, this.vibrationUser);
         }
+
         if (this.tickCount % 10 == 0) {
             this.refreshDimensions();
         }
@@ -700,17 +744,6 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
             return super.hurt(source, adjustedAmount);
         }
         return super.hurt(source, amount * multiplier);
-    }
-
-    /*
-     * GROWTH
-     */
-    public float getMaxGrowth() {
-        return 300.0F;
-    }
-
-    public LivingEntity growInto() {
-        return null;
     }
 
     @Override
@@ -858,9 +891,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
     protected void checkAndPerformEating(ItemEntity target) {
         if (target == null)
             return;
-        if (this.isBirthed())
-            return;
-        if (this.getGrowth() < 10)
+        if (growthTimeTicks() < 200)
             return;
 
         if (isWithinEatingRange(target)) {
@@ -879,21 +910,20 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
                     this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
                 }
                 this.swing(InteractionHand.MAIN_HAND);
-                float growthValue;
+                // TODO(acats) test values
                 if (target.getItem().has(DataComponents.FOOD)) {
                     var foodComponent = target.getItem().get(DataComponents.FOOD);
-                    growthValue = foodComponent.nutrition() * 20.0F;
+                    setGrowthTimeTicks(growthTimeTicks() + foodComponent.nutrition() * 400);
                     target.getItem().finishUsingItem(this.level(), this);
+                    // TODO(acats) find out why chestbursters had this line but everything else didn't
+                    target.getItem().shrink(1);
                 } else {
-                    growthValue = 20.0F;
+                    setGrowthTimeTicks(growthTimeTicks() + 400);
                     if (target.getItem().is(GigTags.POTIONS)) {
                         target.getItem().finishUsingItem(this.level(), this);
-                        target.getItem().consume(1, this);
-                    } else {
-                        target.getItem().consume(1, this);
                     }
+                    target.getItem().consume(1, this);
                 }
-                this.setGrowth(this.getGrowth() + growthValue);
                 this.triggeredAttackAnimation = false;
                 this.delayBeforeEating = 20;
             }
@@ -995,6 +1025,31 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Gr
             heal(1.0833f);
         }
         return super.doHurtTarget(target);
+    }
+
+    public boolean growing() {
+        return growthTimeTicks() < options.growth.maxGrowthTimeTicks;
+    }
+
+    public float growthProgress() {
+        if (options.growth.maxGrowthTimeTicks == 0) {
+            return 1;
+        }
+        return (float) growthTimeTicks() / options.growth.maxGrowthTimeTicks;
+    }
+
+    @Nullable
+    @Override
+    public SpawnGroupData finalizeSpawn(
+        @NotNull ServerLevelAccessor level,
+        @NotNull DifficultyInstance difficulty,
+        @NotNull MobSpawnType spawnType,
+        @Nullable SpawnGroupData spawnGroupData
+    ) {
+        if (spawnType != MobSpawnType.NATURAL && options.growth.spawnFullyGrown) {
+            setGrowthTimeTicks(options.growth.maxGrowthTimeTicks);
+        }
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
 }

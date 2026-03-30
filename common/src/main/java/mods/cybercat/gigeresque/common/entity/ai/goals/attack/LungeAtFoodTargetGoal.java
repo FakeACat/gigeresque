@@ -52,7 +52,7 @@ public class LungeAtFoodTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob instanceof AlienEntity alienEntity && (alienEntity.isBirthed() || alienEntity.getGrowth() > 10)) {
+        if (mob instanceof AlienEntity alienEntity && alienEntity.growthTimeTicks() < 200) {
             return false;
         }
         cooldown = Math.max(cooldown - 1, 0);
@@ -71,7 +71,7 @@ public class LungeAtFoodTargetGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (mob instanceof AlienEntity alienEntity && (alienEntity.isBirthed() || alienEntity.getGrowth() > 10)) {
+        if (mob instanceof AlienEntity alienEntity && alienEntity.growthTimeTicks() < 200) {
             return false;
         }
         var target = this.mob.level().getEntitiesOfClass(ItemEntity.class, this.mob.getBoundingBox().inflate(5)).stream().findFirst();

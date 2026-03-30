@@ -26,7 +26,7 @@ public class NeobursterRenderer extends AzEntityRenderer<NeobursterEntity> {
                 .setDeathMaxRotation(0.0F)
                 .addRenderLayer(new BloodAzLayer<>())
                 .setShadowRadius(0.25F)
-                .setScale(bursterEntity -> 1.0f + ((bursterEntity.getGrowth() / bursterEntity.getMaxGrowth()) / 5.0f))
+                .setScale(bursterEntity -> 1.0f + bursterEntity.growthProgress() / 5.0f)
                 .setPrerenderEntry(rendererPipelineContext -> {
                     if (rendererPipelineContext.bakedModel().getBone("sac").isPresent()) {
                         rendererPipelineContext.bakedModel().getBone("sac").get().setHidden(true);

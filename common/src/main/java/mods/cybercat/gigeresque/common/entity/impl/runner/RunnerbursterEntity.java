@@ -32,24 +32,31 @@ import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeExplodingCre
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFightGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.FleeFireGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.StrollAroundInWaterGoal;
-import mods.cybercat.gigeresque.common.entity.helper.*;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
-import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 public class RunnerbursterEntity extends ChestbursterEntity {
 
     public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
-    }
-
-    public RunnerbursterEntity(
-        EntityType<? extends RunnerbursterEntity> type,
-        Level level,
-        AnimationSelector<AlienEntity> animationSelector
-    ) {
-        super(type, level, animationSelector);
+        animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
+        options = Options.standardAlien(
+            1,
+            false,
+            0,
+            false,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.runnerbursterGrowthMultiplier,
+                prev -> {
+                    var typeSupplier = Objects.equals(((ChestbursterEntity) prev).getHostId(), "runner")
+                        ? GigEntities.RUNNER_ALIEN
+                        : GigEntities.ALIEN;
+                    return typeSupplier.get().create(prev.level());
+                }
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -73,36 +80,13 @@ public class RunnerbursterEntity extends ChestbursterEntity {
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 
-    /*
-     * GROWTH
-     */
-    @Override
-    public float getGrowthMultiplier() {
-        return CommonMod.config.entityConfigs.bursterConfigs.runnerbursterGrowthMultiplier;
-    }
-
     @Override
     public void tick() {
         super.tick();
-        if (this.getGrowth() < 2) {
+        if (growthTimeTicks() < 40) {
             this.animationDispatcher.sendBirth();
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 10), this);
         }
-    }
-
-    /**
-     * TODO: Remove classic alien when Rom stages ready ready
-     */
-    @Override
-    public LivingEntity growInto() {
-        LivingEntity alien;
-        if (Objects.equals(hostId, "runner"))
-            alien = GigEntities.RUNNER_ALIEN.get().create(level());
-        else
-            alien = GigEntities.ALIEN.get().create(level());
-        // alien = GigEntities.ROM_ALIEN.get().create(level());
-
-        return alien;
     }
 
     @Override
@@ -141,8 +125,6 @@ public class RunnerbursterEntity extends ChestbursterEntity {
     ) {
         if (spawnType == MobSpawnType.SPAWN_EGG) {
             setHostId("runner");
-            setGrowth(5);
-            setBirthStatus(false);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

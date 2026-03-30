@@ -34,7 +34,17 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphEntity extends AlienEntity {
 
     public NeomorphEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR, Options.neomorph(3, 0.1f, true));
+        super(
+            entityType,
+            world,
+            GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR,
+            Options.neomorph(
+                3,
+                0.1f,
+                true,
+                GrowthOptions.NO_GROWTH // TODO(acats) maybe add growth
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {

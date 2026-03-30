@@ -24,15 +24,15 @@ public class ClassicAgingAzLayer<T extends AlienEntity> implements AzRenderLayer
 
     @Override
     public void render(AzRendererPipelineContext<UUID, T> context) {
-        T animatable = (T) context.animatable();
+        T alien = (T) context.animatable();
         AzRendererPipeline<UUID, T> renderPipeline = context.rendererPipeline();
         var rendertype = RenderType.entityTranslucentCull(textureLocation);
 
-        if (animatable.getGrowth() < animatable.getMaxGrowth() && animatable.isAlive()) {
+        if (alien.growing() && alien.isAlive()) {
             context.setRenderType(rendertype);
             context.setVertexConsumer(context.multiBufferSource().getBuffer(rendertype));
 
-            var progress = (animatable.getMaxGrowth() - animatable.getGrowth()) / animatable.getMaxGrowth();
+            var progress = 1 - alien.growthProgress();
             var alpha = (int) (progress * 0xFF) << 24;
             var color = (context.renderColor() & 0xFFFFFF) | alpha;
 

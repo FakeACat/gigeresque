@@ -29,7 +29,7 @@ public class SpitterRenderer extends AzEntityRenderer<SpitterEntity> {
                 .addRenderLayer(new AzAutoGlowingLayer<>())
                 .setDeathMaxRotation(0.0F)
                 .setShadowRadius(0.5F)
-                .setScale(spitterEntity -> 0.5f + ((spitterEntity.getGrowth() / spitterEntity.getMaxGrowth()) / 5f))
+                .setScale(spitter -> 0.5f + spitter.growthProgress() / 5f)
                 .build(),
             context
         );

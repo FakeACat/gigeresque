@@ -21,7 +21,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
     protected RomAlienRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<RomAlienEntity>builder(animatable -> EntityModels.ROM_ALIEN, animatable -> {
-                var progress = Math.max(0, Math.min(1 - (animatable.getGrowth() / animatable.getMaxGrowth()), 1));
+                var progress = Math.max(0, Math.min(1 - animatable.growthProgress(), 1));
 
                 if (animatable.stasisManager.isStasis()) {
                     return EntityTextures.ROM_ALIEN_STASIS;
@@ -41,7 +41,7 @@ public class RomAlienRenderer extends AzEntityRenderer<RomAlienEntity> {
                 .setShadowRadius(0.5F)
                 .addRenderLayer(new ClassicAgingAzLayer<>(EntityTextures.ROM_ALIEN_YOUNG))
                 .setScale(romAlienEntity -> {
-                    var scaleFactor = 0.8f + ((romAlienEntity.getGrowth() / romAlienEntity.getMaxGrowth()) / 5f);
+                    var scaleFactor = 0.8f + romAlienEntity.growthProgress() / 5f;
                     return Math.min(scaleFactor, 1.0F);
                 })
                 .build(),

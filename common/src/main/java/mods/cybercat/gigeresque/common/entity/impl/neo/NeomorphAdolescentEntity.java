@@ -1,8 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.neo;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -32,7 +29,20 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphAdolescentEntity extends AlienEntity {
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR, Options.neomorph(1, 0, true));
+        super(
+            entityType,
+            world,
+            GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR,
+            Options.neomorph(
+                1,
+                0,
+                true,
+                GrowthOptions.immature(
+                    CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                    prev -> GigEntities.NEOMORPH.get().create(prev.level())
+                )
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -57,19 +67,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentAttackDamage + 5
             )
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
-    }
-
-    /*
-     * GROWTH
-     */
-    @Override
-    public float getGrowthMultiplier() {
-        return CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier;
-    }
-
-    @Override
-    public LivingEntity growInto() {
-        return GigEntities.NEOMORPH.get().create(level());
     }
 
     @Override
@@ -117,55 +114,6 @@ public class NeomorphAdolescentEntity extends AlienEntity {
         if (this.deathTime == 1)
             GigCommonMethods.generateSporeCloud(this, this.blockPosition(), 0, 0, 2.0f);
         super.tickDeath();
-    }
-
-    @Override
-    protected void checkAndPerformEating(ItemEntity target) {
-        if (target == null)
-            return;
-        if (this.isBirthed())
-            return;
-        if (this.getGrowth() < 10)
-            return;
-
-        if (isWithinEatingRange(target)) {
-            this.lookAt(target, 10.0F, 10.0F);
-            if (this.delayBeforeEating > 0) {
-                this.delayBeforeEating--;
-
-                if (this.delayBeforeEating == 5 && !this.triggeredAttackAnimation) {
-                    this.animationDispatcher.sendChomp();
-                    this.triggeredAttackAnimation = true;
-                }
-            } else {
-                if (target.getItem().is(GigTags.POTIONS)) {
-                    this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
-                } else {
-                    this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
-                }
-                this.swing(InteractionHand.MAIN_HAND);
-                float growthValue;
-                if (target.getItem().has(DataComponents.FOOD)) {
-                    var foodComponent = target.getItem().get(DataComponents.FOOD);
-                    growthValue = foodComponent.nutrition() * 20.0F;
-                    target.getItem().finishUsingItem(this.level(), this);
-                } else {
-                    growthValue = 20.0F;
-                    if (target.getItem().is(GigTags.POTIONS)) {
-                        target.getItem().finishUsingItem(this.level(), this);
-                        target.getItem().consume(1, this);
-                    } else {
-                        target.getItem().consume(1, this);
-                    }
-                }
-                this.setGrowth(this.getGrowth() + growthValue);
-                this.triggeredAttackAnimation = false;
-                this.delayBeforeEating = 20;
-            }
-        } else {
-            delayBeforeEating--;
-            this.triggeredAttackAnimation = false;
-        }
     }
 
 }

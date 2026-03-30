@@ -56,7 +56,7 @@ public class BuildNestGoal extends Goal {
             return false;
         }
 
-        if (this.mob.getGrowth() < this.mob.getMaxGrowth()) {
+        if (this.mob.growing()) {
             return false;
         }
 
@@ -126,7 +126,7 @@ public class BuildNestGoal extends Goal {
             return false;
         }
 
-        if (this.mob.getGrowth() < this.mob.getMaxGrowth()) {
+        if (this.mob.growing()) {
             return false;
         }
 

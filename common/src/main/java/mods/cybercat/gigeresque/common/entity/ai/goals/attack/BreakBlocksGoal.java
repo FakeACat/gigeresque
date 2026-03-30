@@ -55,7 +55,7 @@ public class BreakBlocksGoal extends Goal {
             return false;
         }
 
-        if (alienEntity.isBirthed() || alienEntity.getGrowth() < 10) {
+        if (alienEntity.growthTimeTicks() < 200) {
             return false;
         }
 
@@ -91,7 +91,7 @@ public class BreakBlocksGoal extends Goal {
             return false;
         }
 
-        if (alienEntity.isBirthed() || alienEntity.getGrowth() < 10) {
+        if (alienEntity.growthTimeTicks() < 200) {
             return false;
         }
 

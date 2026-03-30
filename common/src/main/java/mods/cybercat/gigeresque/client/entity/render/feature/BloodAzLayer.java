@@ -18,14 +18,15 @@ public class BloodAzLayer<T extends AlienEntity> implements AzRenderLayer<UUID, 
 
     @Override
     public void render(AzRendererPipelineContext<UUID, T> context) {
-        T animatable = context.animatable();
+        T alien = context.animatable();
         AzRendererPipeline<UUID, T> renderPipeline = context.rendererPipeline();
-        var rendertype = RenderType.entityTranslucentCull(EntityTextures.CHESTBURSTER_BLOOD);
-        var maxGrowth = animatable.getMaxGrowth() / 2;
-        if (animatable.getGrowth() < maxGrowth && animatable.isAlive()) {
-            context.setRenderType(rendertype);
-            context.setVertexConsumer(context.multiBufferSource().getBuffer(rendertype));
-            var progress = (maxGrowth - animatable.getGrowth()) / maxGrowth;
+        var renderType = RenderType.entityTranslucentCull(EntityTextures.CHESTBURSTER_BLOOD);
+        var maxGrowthTicks = alien.options.growth().maxGrowthTimeTicks();
+        var maxGrowthForBloodFadeout = maxGrowthTicks / 2;
+        if (alien.growthTimeTicks() < maxGrowthForBloodFadeout && alien.isAlive()) {
+            context.setRenderType(renderType);
+            context.setVertexConsumer(context.multiBufferSource().getBuffer(renderType));
+            var progress = ((float) maxGrowthForBloodFadeout - alien.growthTimeTicks()) / maxGrowthForBloodFadeout;
             var alpha = (int) (progress * 0xFF) << 24;
             var color = (context.renderColor() & 0xFFFFFF) | alpha;
             context.setRenderColor(color);

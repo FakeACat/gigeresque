@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.templebeast;
 
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -11,9 +10,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
@@ -29,7 +26,18 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class DraconicTempleBeastEntity extends AlienEntity {
 
     public DraconicTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(entityType, level, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.2f, false));
+        super(
+            entityType,
+            level,
+            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
+            Options.standardAlien(
+                3,
+                false,
+                0.2f,
+                false,
+                GrowthOptions.NO_GROWTH
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -48,18 +56,6 @@ public class DraconicTempleBeastEntity extends AlienEntity {
                 CommonMod.config.entityConfigs.draconicTempleBeastConfigs.draconicTempleBeastAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 5.0);
-    }
-
-    @Override
-    public SpawnGroupData finalizeSpawn(
-        @NotNull ServerLevelAccessor level,
-        @NotNull DifficultyInstance difficulty,
-        @NotNull MobSpawnType spawnType,
-        @Nullable SpawnGroupData spawnGroupData
-    ) {
-        if (spawnType != MobSpawnType.NATURAL)
-            setGrowth(getMaxGrowth());
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
     @Override

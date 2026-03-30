@@ -30,7 +30,18 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class HellmorphRunnerEntity extends AlienEntity {
 
     public HellmorphRunnerEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(entityType, level, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Options.standardAlien(3, false, 0.1f, false));
+        super(
+            entityType,
+            level,
+            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
+            Options.standardAlien(
+                3,
+                false,
+                0.1f,
+                false,
+                GrowthOptions.NO_GROWTH // TODO(acats) maybe add growth
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {

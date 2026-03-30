@@ -52,7 +52,20 @@ public class AlienEggEntity extends AlienEntity {
     public int hatchedOpenTimer = 0;
 
     public AlienEggEntity(EntityType<? extends AlienEggEntity> type, Level world) {
-        super(type, world, e -> {}, new Options(BloodType.NONE, 0, false, 0, false, false));
+        super(
+            type,
+            world,
+            e -> {},
+            new Options(
+                BloodType.NONE,
+                0,
+                false,
+                0,
+                false,
+                false,
+                GrowthOptions.NO_GROWTH
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -168,7 +181,8 @@ public class AlienEggEntity extends AlienEntity {
         }
 
         if (!this.level().isClientSide) {
-            this.setGrowth(0);
+            // TODO(acats) figure out why we do this
+            setGrowthTimeTicks(0);
             if (this.getEggState() == EggStates.IDLE.ordinal() && this.getLastDamageSource() != null) {
                 this.setEggState(EggStates.HATCHING.ordinal());
             }

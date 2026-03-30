@@ -8,12 +8,29 @@ import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
+import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 
 public class HellbursterEntity extends RunnerbursterEntity {
 
     public HellbursterEntity(EntityType<? extends HellbursterEntity> type, Level level) {
         super(type, level);
+        animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
+        options = Options.standardAlien(
+            1,
+            false,
+            0,
+            false,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterGrowthMultiplier,
+                prev -> {
+                    var typeSupplier = prev.level().random.nextBoolean()
+                        ? GigEntities.BAPHOMORPH
+                        : GigEntities.HELLMORPH_RUNNER;
+                    return typeSupplier.get().create(prev.level());
+                }
+            )
+        );
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -35,25 +52,6 @@ public class HellbursterEntity extends RunnerbursterEntity {
                 CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterAttackDamage
             )
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
-    }
-
-    /*
-     * GROWTH
-     */
-    @Override
-    public float getGrowthMultiplier() {
-        return CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterGrowthMultiplier;
-    }
-
-    @Override
-    public LivingEntity growInto() {
-        LivingEntity alien;
-        if (this.getRandom().nextInt(0, 100) >= 51)
-            alien = GigEntities.BAPHOMORPH.get().create(level());
-        else
-            alien = GigEntities.HELLMORPH_RUNNER.get().create(level());
-
-        return alien;
     }
 
     @Override
