@@ -284,7 +284,7 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double classicXenoHealth = 200;
+        public double classicXenoHealth = 150;
 
         @Configurable
         @Configurable.Synchronized

@@ -268,7 +268,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "nest_resin",
         () -> new NestResinBlock(
-            Properties.of().sound(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f)
+            Properties.of().sound(SoundType.HONEY_BLOCK).strength(2.0f, 8.0f)
         )
     );
 
@@ -282,7 +282,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "nest_resin_block",
         () -> new AbstractNestBlock(
-            Properties.of().sound(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f)
+            Properties.of().sound(SoundType.HONEY_BLOCK).strength(2.0f, 8.0f)
         )
     );
 
@@ -296,7 +296,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "nest_resin_web",
         () -> new NestResinWebBlock(
-            Properties.of().sound(SoundType.HONEY_BLOCK).strength(5.0f, 8.0f).noCollission()
+            Properties.of().sound(SoundType.HONEY_BLOCK).strength(2.0f, 8.0f).noCollission()
         )
     );
 
@@ -316,7 +316,7 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
                 )
                 .noOcclusion()
                 .requiresCorrectToolForDrops()
-                .strength(5.0f, 8.0f)
+                .strength(2.0f, 8.0f)
                 .noCollission()
         )
     );
