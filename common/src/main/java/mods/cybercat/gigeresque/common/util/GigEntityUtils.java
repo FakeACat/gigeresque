@@ -216,7 +216,7 @@ public record GigEntityUtils() {
             if (entity.getType().is(GigTags.RUNNER_HOSTS)) {
                 var runnerBurster = GigEntities.RUNNERBURSTER.get().create(entity.level());
                 if (runnerBurster != null) {
-                    runnerBurster.setHostId("runner");
+                    runnerBurster.growsIntoRunner = true;
                     return runnerBurster;
                 }
             } else if (entity.getType().is(GigTags.AQUATIC_HOSTS))

@@ -1,6 +1,5 @@
 package mods.cybercat.gigeresque.common.entity.impl.classic;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -26,8 +25,6 @@ import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.tags.GigTags;
 
 public class ChestbursterEntity extends AlienEntity {
-
-    protected String hostId = null;
 
     public ChestbursterEntity(
         EntityType<? extends ChestbursterEntity> type,
@@ -71,14 +68,6 @@ public class ChestbursterEntity extends AlienEntity {
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 
-    public String getHostId() {
-        return hostId;
-    }
-
-    public void setHostId(String hostId) {
-        this.hostId = hostId;
-    }
-
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource source) {
         return GigSounds.HUGGER_HURT.get();
@@ -109,20 +98,6 @@ public class ChestbursterEntity extends AlienEntity {
                 .findFirst()
                 .ifPresent(this::checkAndPerformEating);
         }
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-        if (hostId != null)
-            nbt.putString("hostId", hostId);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        if (nbt.contains("hostId"))
-            hostId = nbt.getString("hostId");
     }
 
     @Override

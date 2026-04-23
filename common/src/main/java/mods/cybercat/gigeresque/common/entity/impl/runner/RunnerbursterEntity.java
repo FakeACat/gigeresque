@@ -19,8 +19,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -49,12 +47,7 @@ public class RunnerbursterEntity extends ChestbursterEntity {
             false,
             GrowthOptions.immature(
                 CommonMod.config.entityConfigs.bursterConfigs.runnerbursterGrowthMultiplier,
-                prev -> {
-                    var typeSupplier = Objects.equals(((ChestbursterEntity) prev).getHostId(), "runner")
-                        ? GigEntities.RUNNER_ALIEN
-                        : GigEntities.ALIEN;
-                    return typeSupplier.get().create(prev.level());
-                }
+                prev -> (prev.growsIntoRunner ? GigEntities.RUNNER_ALIEN : GigEntities.ALIEN).get().create(prev.level())
             )
         );
     }
@@ -124,7 +117,7 @@ public class RunnerbursterEntity extends ChestbursterEntity {
         @Nullable SpawnGroupData spawnGroupData
     ) {
         if (spawnType == MobSpawnType.SPAWN_EGG) {
-            setHostId("runner");
+            growsIntoRunner = true;
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

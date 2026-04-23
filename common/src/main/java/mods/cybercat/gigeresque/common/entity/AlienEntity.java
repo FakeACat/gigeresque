@@ -71,8 +71,6 @@ import mods.cybercat.gigeresque.common.entity.helper.managers.CrawlingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.SearchingManager;
 import mods.cybercat.gigeresque.common.entity.helper.managers.StasisManager;
 import mods.cybercat.gigeresque.common.entity.impl.blood.BloodEntity;
-import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
-import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 import mods.cybercat.gigeresque.common.sound.GigSounds;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
@@ -114,7 +112,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
         float slapItemChance,
         boolean healsOnHit,
         boolean canCrawl,
-        GrowthOptions growth
+        GrowthOptions growth,
+        boolean completelyBlocksMovement
     ) {
 
         public static Options standardAlien(
@@ -131,7 +130,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 slapItemChance,
                 true,
                 canCrawl,
-                growthOptions
+                growthOptions,
+                false
             );
         }
 
@@ -148,7 +148,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 slapItemChance,
                 healsOnHit,
                 false,
-                GrowthOptions.NO_GROWTH
+                GrowthOptions.NO_GROWTH,
+                false
             );
         }
 
@@ -165,7 +166,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 slapItemChance,
                 healsOnHit,
                 false,
-                growthOptions
+                growthOptions,
+                false
             );
         }
     }
@@ -298,6 +300,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
     private int healCounter;
 
     public final ClimbingManager climbingManager;
+
+    // TODO(acats) remove once cocoons are added
+    public boolean growsIntoRunner = false;
 
     public AlienEntity(
         EntityType<? extends AlienEntity> entityType,
@@ -503,6 +508,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
         stasisManager.save(compound);
         searchingManager.save(compound);
         crawlingManager.save(compound);
+        compound.putBoolean("growsIntoRunner", growsIntoRunner);
     }
 
     @Override
@@ -531,6 +537,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 NbtUtils.readBlockPos(compound, "homeBlock").orElse(BlockPos.ZERO)
             );
         }
+        growsIntoRunner = compound.getBoolean("growsIntoRunner"); // TODO(acats) translate old value (hostId)
     }
 
     @Override
@@ -579,10 +586,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 var newEntity = options.growth.createNext.apply(this);
                 assert newEntity != null;
                 newEntity.setPos(getX(), getY(), getZ());
-                // TODO(acats) fix these special cases in a less hacky way
-                if (this instanceof ChestbursterEntity chestburster && newEntity instanceof RunnerbursterEntity runnerburster) {
-                    runnerburster.setHostId(chestburster.getHostId());
-                }
+                newEntity.growsIntoRunner = growsIntoRunner;
                 level().addFreshEntity(newEntity);
                 if (hasCustomName()) {
                     newEntity.setCustomName(getCustomName());
@@ -702,6 +706,19 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
     @Override
     public boolean isPushable() {
         return false;
+    }
+
+    @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        if (options.completelyBlocksMovement) {
+            return this.isAlive();
+        }
+        return super.canBeCollidedWith();
     }
 
     public void grabTarget(Entity entity) {
@@ -895,37 +912,36 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             return;
 
         if (isWithinEatingRange(target)) {
-            this.lookAt(target, 10.0F, 10.0F);
-            if (this.delayBeforeEating > 0) {
-                this.delayBeforeEating--;
+            lookAt(target, 10.0F, 10.0F);
+            if (delayBeforeEating > 0) {
+                delayBeforeEating--;
 
-                if (this.delayBeforeEating == 5 && !this.triggeredAttackAnimation) {
-                    this.animationDispatcher.sendChomp();
-                    this.triggeredAttackAnimation = true;
+                if (delayBeforeEating == 5 && !triggeredAttackAnimation) {
+                    animationDispatcher.sendChomp();
+                    triggeredAttackAnimation = true;
                 }
             } else {
-                if (target.getItem().is(GigTags.POTIONS)) {
-                    this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
+                ItemStack item = target.getItem();
+                if (item.is(GigTags.POTIONS)) {
+                    playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.0F);
                 } else {
-                    this.playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
+                    playSound(SoundEvents.GENERIC_EAT, 1.0F, 1.0F);
                 }
-                this.swing(InteractionHand.MAIN_HAND);
-                // TODO(acats) test values
-                if (target.getItem().has(DataComponents.FOOD)) {
-                    var foodComponent = target.getItem().get(DataComponents.FOOD);
+                swing(InteractionHand.MAIN_HAND);
+                if (item.has(DataComponents.FOOD)) {
+                    var foodComponent = item.get(DataComponents.FOOD);
                     setGrowthTimeTicks(growthTimeTicks() + foodComponent.nutrition() * 400);
-                    target.getItem().finishUsingItem(this.level(), this);
-                    // TODO(acats) find out why chestbursters had this line but everything else didn't
-                    target.getItem().shrink(1);
+                    item.finishUsingItem(level(), this);
+                    item.shrink(1);
                 } else {
                     setGrowthTimeTicks(growthTimeTicks() + 400);
-                    if (target.getItem().is(GigTags.POTIONS)) {
-                        target.getItem().finishUsingItem(this.level(), this);
+                    if (item.is(GigTags.POTIONS)) {
+                        item.finishUsingItem(level(), this);
                     }
-                    target.getItem().consume(1, this);
+                    item.consume(1, this);
                 }
-                this.triggeredAttackAnimation = false;
-                this.delayBeforeEating = 20;
+                triggeredAttackAnimation = false;
+                delayBeforeEating = 20;
             }
         } else {
             delayBeforeEating--;

@@ -67,7 +67,8 @@ public class FacehuggerEntity extends AlienEntity {
                 0,
                 false,
                 false,
-                GrowthOptions.NO_GROWTH
+                GrowthOptions.NO_GROWTH,
+                false
             )
         );
     }

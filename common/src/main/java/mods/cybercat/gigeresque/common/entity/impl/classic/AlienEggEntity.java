@@ -63,7 +63,8 @@ public class AlienEggEntity extends AlienEntity {
                 0,
                 false,
                 false,
-                GrowthOptions.NO_GROWTH
+                GrowthOptions.NO_GROWTH,
+                true
             )
         );
     }
@@ -214,27 +215,6 @@ public class AlienEggEntity extends AlienEntity {
         if (!level().isClientSide && (entity instanceof LivingEntity living && GigEntityUtils.faceHuggerTest(living))) {
             this.setEggState(EggStates.HATCHING.ordinal());
         }
-    }
-
-    /**
-     * Prevents the egg from being pushed.
-     */
-    @Override
-    public boolean isPushable() {
-        return false;
-    }
-
-    @Override
-    public boolean canBeCollidedWith() {
-        return this.isAlive();
-    }
-
-    /**
-     * Prevents fluids from moving the egg.
-     */
-    @Override
-    public boolean isPushedByFluid() {
-        return false;
     }
 
     /**
