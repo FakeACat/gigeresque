@@ -41,18 +41,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class ClassicAlienEntity extends AlienEntity {
 
     public ClassicAlienEntity(@NotNull EntityType<? extends AlienEntity> type, @NotNull Level world) {
-        super(
-            type,
-            world,
-            GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR,
-            Options.standardAlien(
-                3,
-                true,
-                0.1f,
-                true,
-                GrowthOptions.adult(CommonMod.config.entityConfigs.classicXenoConfigs.alienGrowthMultiplier)
-            )
-        );
+        super(type, world, GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR, Type.CLASSIC);
     }
 
     /*

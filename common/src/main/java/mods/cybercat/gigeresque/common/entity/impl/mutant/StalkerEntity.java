@@ -37,7 +37,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class StalkerEntity extends AlienEntity {
 
     public StalkerEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR, Options.gooMutant(3, true, 0, true));
+        super(entityType, world, GigMeleeAttackSelector.STALKER_ANIM_SELECTOR, Type.STALKER);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

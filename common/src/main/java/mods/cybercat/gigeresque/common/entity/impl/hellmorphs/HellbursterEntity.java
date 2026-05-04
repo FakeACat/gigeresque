@@ -7,7 +7,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.helper.GigMeleeAttackSelector;
 import mods.cybercat.gigeresque.common.entity.impl.runner.RunnerbursterEntity;
 
@@ -16,21 +15,7 @@ public class HellbursterEntity extends RunnerbursterEntity {
     public HellbursterEntity(EntityType<? extends HellbursterEntity> type, Level level) {
         super(type, level);
         animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
-        options = Options.standardAlien(
-            1,
-            false,
-            0,
-            false,
-            GrowthOptions.immature(
-                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterGrowthMultiplier,
-                prev -> {
-                    var typeSupplier = prev.level().random.nextBoolean()
-                        ? GigEntities.BAPHOMORPH
-                        : GigEntities.HELLMORPH_RUNNER;
-                    return typeSupplier.get().create(prev.level());
-                }
-            )
-        );
+        this.type = Type.HELLBURSTER;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

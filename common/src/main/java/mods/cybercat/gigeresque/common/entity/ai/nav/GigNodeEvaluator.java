@@ -20,7 +20,7 @@ public class GigNodeEvaluator extends WalkNodeEvaluator {
     public void prepare(@NotNull PathNavigationRegion level, @NotNull Mob mob) {
         super.prepare(level, mob);
         var alien = (AlienEntity) mob;
-        if (alien.options.canClimb() && !alien.isInWater() && !alien.isVehicle()) {
+        if (alien.type.canClimb() && !alien.isInWater() && !alien.isVehicle()) {
             // this assumes that all aliens capable of climbing will correctly adjust their hitbox to actually allow
             // them to follow the path
             entityHeight = 1;

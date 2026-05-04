@@ -24,18 +24,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class RavenousTempleBeastEntity extends AlienEntity {
 
     public RavenousTempleBeastEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(
-            entityType,
-            level,
-            GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR,
-            Options.standardAlien(
-                3,
-                false,
-                0.2f,
-                false,
-                GrowthOptions.NO_GROWTH
-            )
-        );
+        super(entityType, level, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR, Type.RAVENOUS_TEMPLEBEAST);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

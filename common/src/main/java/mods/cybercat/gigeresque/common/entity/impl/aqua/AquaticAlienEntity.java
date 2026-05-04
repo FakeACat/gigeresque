@@ -36,18 +36,7 @@ public class AquaticAlienEntity extends AlienEntity {
     public int killCounter;
 
     public AquaticAlienEntity(EntityType<? extends AlienEntity> type, Level world) {
-        super(
-            type,
-            world,
-            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
-            Options.standardAlien(
-                3,
-                false,
-                0.1f,
-                false,
-                GrowthOptions.adult(CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier)
-            )
-        );
+        super(type, world, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Type.AQUATIC);
     }
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {

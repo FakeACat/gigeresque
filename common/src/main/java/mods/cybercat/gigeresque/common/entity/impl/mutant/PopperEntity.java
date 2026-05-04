@@ -34,7 +34,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class PopperEntity extends AlienEntity {
 
     public PopperEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.POPPER_SELECTOR, Options.gooMutant(1, false, 0, false));
+        super(entityType, world, GigMeleeAttackSelector.POPPER_SELECTOR, Type.POPPER);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

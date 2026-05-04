@@ -24,12 +24,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class BaphomorphEntity extends AlienEntity {
 
     public BaphomorphEntity(EntityType<? extends AlienEntity> entityType, Level level) {
-        super(
-            entityType,
-            level,
-            GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR,
-            Options.standardAlien(3, false, 0.2f, false, GrowthOptions.NO_GROWTH)
-        );
+        super(entityType, level, GigMeleeAttackSelector.STANDARD_ANIM_SELECTOR, Type.BAPHOMORPH);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
@@ -40,16 +39,7 @@ public class RunnerbursterEntity extends ChestbursterEntity {
     public RunnerbursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
         animationSelector = GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR;
-        options = Options.standardAlien(
-            1,
-            false,
-            0,
-            false,
-            GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.runnerbursterGrowthMultiplier,
-                prev -> (prev.growsIntoRunner ? GigEntities.RUNNER_ALIEN : GigEntities.ALIEN).get().create(prev.level())
-            )
-        );
+        this.type = Type.RUNNERBURSTER;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

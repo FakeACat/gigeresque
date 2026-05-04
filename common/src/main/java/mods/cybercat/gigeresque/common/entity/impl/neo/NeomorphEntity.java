@@ -38,12 +38,7 @@ public class NeomorphEntity extends AlienEntity {
             entityType,
             world,
             GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR,
-            Options.neomorph(
-                3,
-                0.1f,
-                true,
-                GrowthOptions.NO_GROWTH // TODO(acats) maybe add growth
-            )
+            Type.NEOMORPH
         );
     }
 

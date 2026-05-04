@@ -21,7 +21,7 @@ public class BloodAzLayer<T extends AlienEntity> implements AzRenderLayer<UUID, 
         T alien = context.animatable();
         AzRendererPipeline<UUID, T> renderPipeline = context.rendererPipeline();
         var renderType = RenderType.entityTranslucentCull(EntityTextures.CHESTBURSTER_BLOOD);
-        var maxGrowthTicks = alien.options.growth().maxGrowthTimeTicks();
+        var maxGrowthTicks = alien.type.growth().maxTimeTicks();
         var maxGrowthForBloodFadeout = maxGrowthTicks / 2;
         if (alien.growthTimeTicks() < maxGrowthForBloodFadeout && alien.isAlive()) {
             context.setRenderType(renderType);

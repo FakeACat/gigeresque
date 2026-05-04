@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
@@ -33,15 +32,7 @@ public class NeobursterEntity extends RunnerbursterEntity {
     public NeobursterEntity(EntityType<? extends RunnerbursterEntity> type, Level level) {
         super(type, level);
         animationSelector = GigMeleeAttackSelector.NBUSTER_ANIM_SELECTOR;
-        options = Options.neomorph(
-            1,
-            0.1f,
-            false,
-            GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
-                prev -> GigEntities.NEOMORPH_ADOLESCENT.get().create(prev.level())
-            )
-        );
+        this.type = Type.NEOBURSTER;
     }
 
     public static AttributeSupplier.Builder createAttributes() {

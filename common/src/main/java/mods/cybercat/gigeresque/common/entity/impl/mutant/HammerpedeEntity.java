@@ -27,7 +27,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class HammerpedeEntity extends AlienEntity {
 
     public HammerpedeEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(entityType, world, GigMeleeAttackSelector.HAMMER_ANIM_SELECTOR, Options.gooMutant(1, false, 0, false));
+        super(entityType, world, GigMeleeAttackSelector.HAMMER_ANIM_SELECTOR, Type.HAMMERPEDE);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.*;
 import mods.cybercat.gigeresque.common.entity.ai.goals.movement.*;
 import mods.cybercat.gigeresque.common.entity.helper.GigCommonMethods;
@@ -30,21 +29,7 @@ public class ChestbursterEntity extends AlienEntity {
         EntityType<? extends ChestbursterEntity> type,
         Level world
     ) {
-        super(
-            type,
-            world,
-            GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR,
-            Options.standardAlien(
-                1,
-                false,
-                0,
-                false,
-                GrowthOptions.immature(
-                    CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
-                    prev -> GigEntities.RUNNERBURSTER.get().create(prev.level())
-                )
-            )
-        );
+        super(type, world, GigMeleeAttackSelector.RBUSTER_ANIM_SELECTOR, Type.CHESTBURSTER);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

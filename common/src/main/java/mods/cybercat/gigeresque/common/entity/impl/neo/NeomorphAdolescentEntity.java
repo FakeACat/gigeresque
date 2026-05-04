@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
-import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.BreakBlocksGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.DelayedAttackGoal;
 import mods.cybercat.gigeresque.common.entity.ai.goals.attack.EatFoodItemGoal;
@@ -29,20 +28,7 @@ import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 public class NeomorphAdolescentEntity extends AlienEntity {
 
     public NeomorphAdolescentEntity(EntityType<? extends AlienEntity> entityType, Level world) {
-        super(
-            entityType,
-            world,
-            GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR,
-            Options.neomorph(
-                1,
-                0,
-                true,
-                GrowthOptions.immature(
-                    CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
-                    prev -> GigEntities.NEOMORPH.get().create(prev.level())
-                )
-            )
-        );
+        super(entityType, world, GigMeleeAttackSelector.NORMAL_ANIM_SELECTOR, Type.NEOMORPH_ADOLESCENT);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

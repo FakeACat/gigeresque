@@ -36,13 +36,7 @@ public class RomAlienEntity extends AlienEntity {
             type,
             world,
             GigMeleeAttackSelector.CLASSIC_ANIM_SELECTOR,
-            Options.standardAlien(
-                3,
-                true,
-                0.1f,
-                true,
-                GrowthOptions.adult(CommonMod.config.entityConfigs.classicXenoConfigs.alienGrowthMultiplier)
-            )
+            Type.CLASSIC // TODO give unique type
         );
     }
 

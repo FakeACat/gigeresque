@@ -81,100 +81,6 @@ import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
 public abstract class AlienEntity extends Monster implements VibrationSystem, AbstractAlien {
 
-    public enum BloodType {
-        NONE,
-        ACID,
-        GOO
-    }
-
-    public record GrowthOptions(
-        int maxGrowthTimeTicks,
-        @Nullable Function<AlienEntity, AlienEntity> createNext,
-        boolean spawnFullyGrown
-    ) {
-
-        public static final GrowthOptions NO_GROWTH = new GrowthOptions(0, null, true);
-
-        public static GrowthOptions adult(float growthMultiplier) {
-            return new GrowthOptions((int) ((float) 6000 / growthMultiplier), null, true);
-        }
-
-        public static GrowthOptions immature(float growthMultiplier, Function<AlienEntity, AlienEntity> createNext) {
-            return new GrowthOptions((int) ((float) 6000 / growthMultiplier), createNext, false);
-        }
-
-    }
-
-    public record Options(
-        BloodType bloodType,
-        int bloodDiameter,
-        boolean canClimb,
-        float slapItemChance,
-        boolean healsOnHit,
-        boolean canCrawl,
-        GrowthOptions growth,
-        boolean completelyBlocksMovement
-    ) {
-
-        public static Options standardAlien(
-            int bloodDiameter,
-            boolean canClimb,
-            float slapItemChance,
-            boolean canCrawl,
-            GrowthOptions growthOptions
-        ) {
-            return new Options(
-                BloodType.ACID,
-                bloodDiameter,
-                canClimb,
-                slapItemChance,
-                true,
-                canCrawl,
-                growthOptions,
-                false
-            );
-        }
-
-        public static Options gooMutant(
-            int bloodDiameter,
-            boolean canClimb,
-            float slapItemChance,
-            boolean healsOnHit
-        ) {
-            return new Options(
-                CommonMod.config.entityConfigs.gooMutantBloodType,
-                bloodDiameter,
-                canClimb,
-                slapItemChance,
-                healsOnHit,
-                false,
-                GrowthOptions.NO_GROWTH,
-                false
-            );
-        }
-
-        public static Options neomorph(
-            int bloodDiameter,
-            float slapItemChance,
-            boolean healsOnHit,
-            GrowthOptions growthOptions
-        ) {
-            return new Options(
-                CommonMod.config.entityConfigs.neomorphBloodType,
-                bloodDiameter,
-                false,
-                slapItemChance,
-                healsOnHit,
-                false,
-                growthOptions,
-                false
-            );
-        }
-    }
-
-    // TODO(acats) make final
-    public Options options;
-
     public static final EntityDataAccessor<BlockPos> HOME_BLOCKPOS = SynchedEntityData.defineId(
         AlienEntity.class,
         EntityDataSerializers.BLOCK_POS
@@ -301,14 +207,288 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
 
     public final ClimbingManager climbingManager;
 
-    // TODO(acats) remove once cocoons are added
-    public boolean growsIntoRunner = false;
+    public boolean growsIntoRunner = false; // TODO(acats) remove once cocoons are added
+
+    public enum BloodType { NONE, ACID, GOO }
+
+    public record GrowthOptions(
+        int maxTimeTicks,
+        // NOTE(acats): this only needs to be a function instead of an EntityType because of hellbursters (unused) and
+        // classic aliens using runnerbursters as an intermediate stage (will be changed) so this can be simplified
+        // later down the line
+        @Nullable Function<AlienEntity, AlienEntity> createNext,
+        boolean spawnFullyGrown
+    ) {
+        public static final GrowthOptions NO_GROWTH = new GrowthOptions(0, null, true);
+
+        public static GrowthOptions adult(float growthMultiplier) {
+            return new GrowthOptions((int) ((float) 6000 / growthMultiplier), null, true);
+        }
+
+        public static GrowthOptions immature(float growthMultiplier, Function<AlienEntity, AlienEntity> createNext) {
+            return new GrowthOptions((int) ((float) 6000 / growthMultiplier), createNext, false);
+        }
+    }
+
+    public record Type(
+        BloodType bloodType,
+        int bloodDiameter,
+
+        boolean canClimb,
+        boolean canCrawl,
+
+        float slapItemChance,
+        boolean healsOnHit,
+
+        GrowthOptions growth,
+
+        boolean completelyBlocksMovement
+    ) {
+        public static final float STANDARD_SLAP_CHANCE = 0.1f;
+        public static final float TEMPLEBEAST_SLAP_CHANCE = 0.2f;
+
+        public static final Type EGG = new Type(
+            BloodType.NONE,
+            0,
+            false,
+            false,
+            0.0f,
+            false,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type FACEHUGGER = new Type(
+            BloodType.ACID,
+            1,
+            true,
+            false,
+            0.0f,
+            false,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type CLASSIC = new Type(
+            BloodType.ACID,
+            3,
+            true,
+            true,
+            STANDARD_SLAP_CHANCE,
+            true,
+            GrowthOptions.adult(CommonMod.config.entityConfigs.classicXenoConfigs.alienGrowthMultiplier),
+            false
+        );
+        public static final Type RUNNER = new Type(
+            BloodType.ACID,
+            3,
+            true,
+            false,
+            STANDARD_SLAP_CHANCE,
+            true,
+            GrowthOptions.adult(CommonMod.config.entityConfigs.runnerbusterConfigs.runnerAlienGrowthMultiplier),
+            false
+        );
+        public static final Type AQUATIC = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            STANDARD_SLAP_CHANCE,
+            true,
+            GrowthOptions.adult(CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier),
+            false
+        );
+        public static final Type SPITTER = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            STANDARD_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH, // TODO(acats) maybe add growth
+            false
+        );
+        public static final Type DRACONIC_TEMPLEBEAST = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            TEMPLEBEAST_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type RAVENOUS_TEMPLEBEAST = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            TEMPLEBEAST_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type MOONLIGHT_HORROR_TEMPLEBEAST = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            TEMPLEBEAST_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type CHESTBURSTER = new Type(
+            BloodType.ACID,
+            1,
+            false,
+            false,
+            0.0f,
+            true,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                prev -> GigEntities.RUNNERBURSTER.get().create(prev.level())
+            ),
+            false
+        );
+        public static final Type RUNNERBURSTER = new Type(
+            BloodType.ACID,
+            1,
+            false,
+            false,
+            0.0f,
+            true,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.runnerbursterGrowthMultiplier,
+                prev -> (prev.growsIntoRunner ? GigEntities.RUNNER_ALIEN : GigEntities.ALIEN).get().create(prev.level())
+            ),
+            false
+        );
+        public static final Type AQUATIC_CHESTBURSTER = new Type(
+            BloodType.ACID,
+            1,
+            false,
+            false,
+            0.0f,
+            true,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.aquaticChestbursterGrowthMultiplier,
+                prev -> GigEntities.AQUATIC_ALIEN.get().create(prev.level())
+            ),
+            false
+        );
+        public static final Type HELLBURSTER = new Type(
+            BloodType.ACID,
+            1,
+            false,
+            false,
+            0.0f,
+            true,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterGrowthMultiplier,
+                prev -> {
+                    var typeSupplier = prev.level().random.nextBoolean()
+                        ? GigEntities.BAPHOMORPH
+                        : GigEntities.HELLMORPH_RUNNER;
+                    return typeSupplier.get().create(prev.level());
+                }
+            ),
+            false
+        );
+        public static final Type BAPHOMORPH = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            TEMPLEBEAST_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type HELLMORPH_RUNNER = new Type(
+            BloodType.ACID,
+            3,
+            false,
+            false,
+            STANDARD_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH, // TODO(acats) maybe add growth
+            false
+        );
+        public static final Type HAMMERPEDE = new Type(
+            CommonMod.config.entityConfigs.gooMutantBloodType,
+            1,
+            false,
+            false,
+            0.0f,
+            false,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type POPPER = new Type(
+            CommonMod.config.entityConfigs.gooMutantBloodType,
+            1,
+            false,
+            false,
+            0.0f,
+            false,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type STALKER = new Type(
+            CommonMod.config.entityConfigs.gooMutantBloodType,
+            3,
+            true,
+            false,
+            0.0f,
+            true,
+            GrowthOptions.NO_GROWTH,
+            false
+        );
+        public static final Type NEOBURSTER = new Type(
+            CommonMod.config.entityConfigs.neomorphBloodType,
+            1,
+            false,
+            false,
+            0.0f,
+            false,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                prev -> GigEntities.NEOMORPH_ADOLESCENT.get().create(prev.level())
+            ),
+            false
+        );
+        public static final Type NEOMORPH_ADOLESCENT = new Type(
+            CommonMod.config.entityConfigs.neomorphBloodType,
+            1,
+            false,
+            false,
+            0.0f,
+            true,
+            GrowthOptions.immature(
+                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                prev -> GigEntities.NEOMORPH.get().create(prev.level())
+            ),
+            false
+        );
+        public static final Type NEOMORPH = new Type(
+            CommonMod.config.entityConfigs.neomorphBloodType,
+            3,
+            false,
+            false,
+            STANDARD_SLAP_CHANCE,
+            true,
+            GrowthOptions.NO_GROWTH, // TODO(acats) maybe add growth
+            false
+        );
+    }
+
+    public Type type; // TODO(acats) make final
 
     public AlienEntity(
         EntityType<? extends AlienEntity> entityType,
         Level level,
         AnimationSelector<AlienEntity> animationSelector,
-        Options options
+        Type type
     ) {
         super(entityType, level);
         this.noCulling = true;
@@ -330,7 +510,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
         this.animationDispatcher = new AnimationDispatcher(this);
         this.moveAnalysis = new MoveAnalysis(this);
         this.animationSelector = animationSelector;
-        this.options = options;
+        this.type = type;
     }
 
     public static boolean checkMonsterSpawnRules(
@@ -576,14 +756,14 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 this.remove(RemovalReason.DISCARDED);
             }
 
-            if (growthTimeTicks() < options.growth.maxGrowthTimeTicks) {
+            if (growthTimeTicks() < type.growth.maxTimeTicks) {
                 setGrowthTimeTicks(growthTimeTicks() + 1);
-            } else if (options.growth.createNext == null) {
+            } else if (type.growth.createNext == null) {
                 // unique case where the growth multiplier is decreased so the alien ends up with a growth time greater
                 // than the maximum
-                setGrowthTimeTicks(options.growth.maxGrowthTimeTicks);
+                setGrowthTimeTicks(type.growth.maxTimeTicks);
             } else {
-                var newEntity = options.growth.createNext.apply(this);
+                var newEntity = type.growth.createNext.apply(this);
                 assert newEntity != null;
                 newEntity.setPos(getX(), getY(), getZ());
                 newEntity.growsIntoRunner = growsIntoRunner;
@@ -641,9 +821,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
         }
 
         moveAnalysis.update();
-        if (options.canCrawl) {
+        if (type.canCrawl)
             crawlingManager.tick();
-        }
     }
 
     @Override
@@ -715,9 +894,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
 
     @Override
     public boolean canBeCollidedWith() {
-        if (options.completelyBlocksMovement) {
-            return this.isAlive();
-        }
+        if (type.completelyBlocksMovement)
+            return isAlive();
         return super.canBeCollidedWith();
     }
 
@@ -979,13 +1157,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
     }
 
     public void bleed(DamageSource source) {
-        if (options.bloodType == BloodType.NONE) {
+        if (type.bloodType == BloodType.NONE)
             return;
-        }
 
-        if (level().isClientSide()) {
+        if (level().isClientSide())
             return;
-        }
 
         // not sure why we're checking for this, keeping it from the old bleed code, maybe they should be moved to
         // isDamageSourceNotPuncturing?
@@ -997,22 +1173,23 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             return;
         }
 
-        var bloodEntityType = switch (options.bloodType) {
+        var bloodEntityType = switch (type.bloodType) {
             case NONE -> null; // bloodType should not be NONE at this point
             case ACID -> GigEntities.ACID.get();
             case GOO -> GigEntities.GOO.get();
         };
         assert bloodEntityType != null;
 
-        if (options.bloodDiameter == 1) {
+        if (type.bloodDiameter == 1) {
             BloodEntity.place(bloodEntityType, level(), blockPosition());
             return;
         }
 
-        var radius = (options.bloodDiameter - 1) / 2;
-        for (int i = 0; i < options.bloodDiameter; i++) {
-            int x = level().getRandom().nextInt(options.bloodDiameter) - radius;
-            int z = level().getRandom().nextInt(options.bloodDiameter) - radius;
+        var diameter = type.bloodDiameter;
+        var radius = (diameter - 1) / 2;
+        for (int i = 0; i < diameter; i++) {
+            int x = level().getRandom().nextInt(diameter) - radius;
+            int z = level().getRandom().nextInt(diameter) - radius;
             BloodEntity.place(bloodEntityType, level(), blockPosition().offset(x, 0, z));
         }
     }
@@ -1020,10 +1197,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
     @Override
     public boolean doHurtTarget(Entity target) {
         if (
-            options.slapItemChance > 0 &&
+            type.slapItemChance > 0 &&
                 target instanceof LivingEntity living &&
                 !level().isClientSide &&
-                getRandom().nextFloat() < options.slapItemChance
+                getRandom().nextFloat() < type.slapItemChance
         ) {
             // TODO(acats) tail attack for item slap
 
@@ -1037,21 +1214,19 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             living.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
         }
 
-        if (options.healsOnHit) {
+        if (type.healsOnHit)
             heal(1.0833f);
-        }
         return super.doHurtTarget(target);
     }
 
     public boolean growing() {
-        return growthTimeTicks() < options.growth.maxGrowthTimeTicks;
+        return growthTimeTicks() < type.growth.maxTimeTicks;
     }
 
     public float growthProgress() {
-        if (options.growth.maxGrowthTimeTicks == 0) {
+        if (type.growth.maxTimeTicks == 0)
             return 1;
-        }
-        return (float) growthTimeTicks() / options.growth.maxGrowthTimeTicks;
+        return (float) growthTimeTicks() / type.growth.maxTimeTicks;
     }
 
     @Nullable
@@ -1062,8 +1237,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
         @NotNull MobSpawnType spawnType,
         @Nullable SpawnGroupData spawnGroupData
     ) {
-        if (spawnType != MobSpawnType.NATURAL && options.growth.spawnFullyGrown) {
-            setGrowthTimeTicks(options.growth.maxGrowthTimeTicks);
+        if (spawnType != MobSpawnType.NATURAL && type.growth.spawnFullyGrown) {
+            setGrowthTimeTicks(type.growth.maxTimeTicks);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
