@@ -44,22 +44,13 @@ public class RunnerbursterEntity extends ChestbursterEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.runnerbusterConfigs.runnerbusterHealth
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.runnerbursterConfigs.runnerbursterHealth)
             .add(Attributes.ARMOR, 0.0f)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                0.0f
-            )
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0f)
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
             .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.runnerbusterConfigs.runnerbusterAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.runnerbursterConfigs.runnerbursterAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 

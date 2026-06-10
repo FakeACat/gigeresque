@@ -44,25 +44,13 @@ public class NeomorphEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.neomorphConfigs.neomorphXenoHealth
-            )
-            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.neomorphConfigs.neomorphXenoArmor)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                CommonMod.config.entityConfigs.neomorphConfigs.neomorphXenoArmor
-            )
-            .add(
-                Attributes.KNOCKBACK_RESISTANCE,
-                0.0
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.neomorphConfigs.neomorphHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.neomorphConfigs.neomorphArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, CommonMod.config.entityConfigs.neomorphConfigs.neomorphArmor)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
             .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.neomorphConfigs.neomorphAttackDamage + 5
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.neomorphConfigs.neomorphAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 

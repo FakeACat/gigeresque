@@ -20,6 +20,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.client.particle.GigParticles;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.source.GigDamageSources;
@@ -148,7 +149,10 @@ public class AcidSpitProjectile extends Projectile implements ItemSupplier {
                     livingEntity.getUseItem()
                         .hurtAndBreak(10, livingEntity, livingEntity.getEquipmentSlotForItem(livingEntity.getUseItem()));
                 } else {
-                    livingEntity.hurt(GigDamageSources.of(this.level(), GigDamageSources.ACID), 4.0f);
+                    livingEntity.hurt(
+                        GigDamageSources.of(this.level(), GigDamageSources.ACID),
+                        CommonMod.config.entityConfigs.spitterConfigs.spitterRangedAttackDamage
+                    );
                 }
             });
         }

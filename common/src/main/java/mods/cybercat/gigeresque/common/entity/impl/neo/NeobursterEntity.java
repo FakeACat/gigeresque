@@ -37,25 +37,13 @@ public class NeobursterEntity extends RunnerbursterEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.neobursterConfigs.neobursterXenoHealth
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.neobursterConfigs.neobursterHealth)
             .add(Attributes.ARMOR, 0.0f)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                7.0
-            )
+            .add(Attributes.ARMOR_TOUGHNESS, 7.0)
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
-            .add(
-                Attributes.FOLLOW_RANGE,
-                32.0
-            )
+            .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.neobursterConfigs.neobursterAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.neobursterConfigs.neobursterAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 

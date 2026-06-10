@@ -212,10 +212,11 @@ public final class NeoForgeMod {
     }
 
     public void createEntityAttributes(final EntityAttributeCreationEvent event) {
+        // TODO(acats) unify between mod loaders
         event.put(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes().build());
         // event.put(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes().build());
         event.put(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes().build());
-        event.put(GigEntities.AQUATIC_CHESTBURSTER.get(), ChestbursterEntity.createAttributes().build());
+        event.put(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntity.createAttributes().build());
         event.put(GigEntities.CHESTBURSTER.get(), ChestbursterEntity.createAttributes().build());
         event.put(GigEntities.EGG.get(), AlienEggEntity.createAttributes().build());
         event.put(GigEntities.FACEHUGGER.get(), FacehuggerEntity.createAttributes().build());

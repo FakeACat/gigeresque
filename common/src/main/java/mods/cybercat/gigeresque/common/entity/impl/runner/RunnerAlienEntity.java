@@ -29,22 +29,13 @@ public class RunnerAlienEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.runnerConfigs.runnerXenoHealth
-            )
-            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.runnerConfigs.runnerXenoArmor)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                CommonMod.config.entityConfigs.runnerConfigs.runnerXenoArmor
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienArmor)
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
             .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.runnerConfigs.runnerXenoAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 

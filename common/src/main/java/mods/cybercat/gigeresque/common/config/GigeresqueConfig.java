@@ -9,6 +9,9 @@ import mods.cybercat.gigeresque.common.entity.AlienEntity.BloodType;
 @Config(id = CommonMod.MOD_ID)
 public class GigeresqueConfig {
 
+    public static final float DEFAULT_HEAL_OVER_TIME_AMOUNT = 3.5833f;
+    public static final int DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS = 10;
+
     @Configurable
     @Configurable.Synchronized
     public GeneralConfigs generalConfigs = new GeneralConfigs();
@@ -141,11 +144,11 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public BursterConfigs bursterConfigs = new BursterConfigs();
+        public BursterConfigs chestbursterConfigs = new BursterConfigs();
 
         @Configurable
         @Configurable.Synchronized
-        public ClassicConfigs classicXenoConfigs = new ClassicConfigs();
+        public ClassicConfigs alienConfigs = new ClassicConfigs();
 
         // @Configurable
         // @Configurable.Synchronized
@@ -153,7 +156,11 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public AquaticAlienConfigs aquaticXenoConfigs = new AquaticAlienConfigs();
+        public AquabursterConfigs aquatic_chestbursterConfigs = new AquabursterConfigs();
+
+        @Configurable
+        @Configurable.Synchronized
+        public AquaticAlienConfigs aquatic_alienConfigs = new AquaticAlienConfigs();
 
         @Configurable
         @Configurable.Synchronized
@@ -169,11 +176,11 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public RBusterConfigs runnerbusterConfigs = new RBusterConfigs();
+        public RBusterConfigs runnerbursterConfigs = new RBusterConfigs();
 
         @Configurable
         @Configurable.Synchronized
-        public RunnerConfigs runnerConfigs = new RunnerConfigs();
+        public RunnerConfigs runner_alienConfigs = new RunnerConfigs();
 
         @Configurable
         @Configurable.Synchronized
@@ -185,7 +192,7 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public NeoAdolescentConfigs neomorphAdolescentConfigs = new NeoAdolescentConfigs();
+        public NeoAdolescentConfigs neomorph_adolescentConfigs = new NeoAdolescentConfigs();
 
         @Configurable
         @Configurable.Synchronized
@@ -193,11 +200,11 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public HBursterConfigs hellbusterConfigs = new HBursterConfigs();
+        public HBursterConfigs hell_bursterConfigs = new HBursterConfigs();
 
         @Configurable
         @Configurable.Synchronized
-        public HellmorphRunnerConfigs hellmorphrunnerConfigs = new HellmorphRunnerConfigs();
+        public HellmorphRunnerConfigs hellmorph_runnerConfigs = new HellmorphRunnerConfigs();
 
         @Configurable
         @Configurable.Synchronized
@@ -205,15 +212,15 @@ public class GigeresqueConfig {
 
         @Configurable
         @Configurable.Synchronized
-        public DTBConfigs draconicTempleBeastConfigs = new DTBConfigs();
+        public DTBConfigs draconictemplebeastConfigs = new DTBConfigs();
 
         @Configurable
         @Configurable.Synchronized
-        public MHTBConfigs moonlightHorrorTempleBeastConfigs = new MHTBConfigs();
+        public MHTBConfigs moonlighthorrortemplebeastConfigs = new MHTBConfigs();
 
         @Configurable
         @Configurable.Synchronized
-        public RTBConfigs ravenousTempleBeastConfigs = new RTBConfigs();
+        public RTBConfigs ravenoustemplebeastConfigs = new RTBConfigs();
     }
 
     public static class FacehuggerConfigs {
@@ -249,6 +256,16 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public double facehuggerHealth = 40;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float facehuggerHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int facehuggerHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class BursterConfigs {
@@ -261,17 +278,17 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float aquaticChestbursterGrowthMultiplier = 1.0f;
-
-        @Configurable
-        @Configurable.Synchronized
-        @Configurable.DecimalRange(min = 1)
         public float chestbursterGrowthMultiplier = 1.0f;
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.DecimalRange(min = 1)
-        public float runnerbursterGrowthMultiplier = 1.0f;
+        @Configurable.Range(min = 0)
+        public float chestbursterHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int chestbursterHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class ClassicConfigs {
@@ -284,27 +301,37 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double classicXenoHealth = 150;
+        public double alienHealth = 150;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double classicXenoArmor = 9;
+        public double alienArmor = 9;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double classicXenoAttackDamage = 7;
+        public double alienAttackDamage = 7;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float classicXenoTailAttackDamage = 3;
+        public float alienTailAttackDamage = 3;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float classicXenoAttackSpeed = 3.9F;
+        public float alienAttackSpeed = 3.9F;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float alienHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int alienHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     // public static class romConfigs {
@@ -340,32 +367,65 @@ public class GigeresqueConfig {
     // public float romXenoAttackSpeed = 3.9F;
     // }
 
+    public static class AquabursterConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public double aquatic_chestbursterHealth = 30;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float aquatic_chestbursterGrowthMultiplier = 1.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float aquatic_chestbursterHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int aquatic_chestbursterHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
+    }
+
     public static class AquaticAlienConfigs {
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float aquaticAlienGrowthMultiplier = 1.0f;
+        public float aquatic_alienGrowthMultiplier = 1.0f;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double aquaticXenoHealth = 190;
+        public double aquatic_alienHealth = 190;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double aquaticXenoArmor = 6;
+        public double aquatic_alienArmor = 6;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double aquaticXenoAttackDamage = 7;
+        public double aquatic_alienAttackDamage = 7;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float aquaticXenoTailAttackDamage = 3;
+        public float aquatic_alienTailAttackDamage = 3;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float aquatic_alienHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int aquatic_alienHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class HammerpedeConfigs {
@@ -379,6 +439,16 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public double hammerpedeAttackDamage = 1.5;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float hammerpedeHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int hammerpedeHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class PopperConfigs {
@@ -392,6 +462,16 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public double popperAttackDamage = 3;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float popperHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int popperHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class RBusterConfigs {
@@ -399,17 +479,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float runnerAlienGrowthMultiplier = 1.0f;
+        public float runnerbursterGrowthMultiplier = 1.0f;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double runnerbusterHealth = 30;
+        public double runnerbursterHealth = 30;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double runnerbusterAttackDamage = 5;
+        public double runnerbursterAttackDamage = 5;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float runnerbursterHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int runnerbursterHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class StalkerConfigs {
@@ -417,12 +507,12 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double stalkerXenoHealth = 120;
+        public double stalkerHealth = 120;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double stalkerXenoArmor = 4;
+        public double stalkerArmor = 4;
 
         @Configurable
         @Configurable.Synchronized
@@ -438,6 +528,16 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public float stalkerAttackSpeed = 1.7F;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float stalkerHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int stalkerHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class RunnerConfigs {
@@ -445,27 +545,42 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double runnerXenoHealth = 160;
+        public float runner_alienGrowthMultiplier = 1.0f;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double runnerXenoArmor = 6;
+        public double runner_alienHealth = 160;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double runnerXenoAttackDamage = 7;
+        public double runner_alienArmor = 6;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float runnerXenoTailAttackDamage = 3;
+        public double runner_alienAttackDamage = 7;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float runnerXenoAttackSpeed = 3.0F;
+        public float runner_alienTailAttackDamage = 3;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float runner_alienAttackSpeed = 3.0F;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float runner_alienHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int runner_alienHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class EggConfigs {
@@ -494,6 +609,16 @@ public class GigeresqueConfig {
         @Configurable.Synchronized
         @Configurable.Range(min = 1)
         public int alienegg_max_group = 1;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float alieneggHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int alieneggHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class SpitterConfigs {
@@ -501,12 +626,12 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double spitterXenoHealth = 120;
+        public double spitterHealth = 120;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double spitterXenoArmor = 4;
+        public double spitterArmor = 4;
 
         @Configurable
         @Configurable.Synchronized
@@ -516,12 +641,22 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double spitterRangeAttackDamage = 3;
+        public float spitterRangedAttackDamage = 4;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float spitterXenoTailAttackDamage = 3;
+        public float spitterTailAttackDamage = 3;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float spitterHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int spitterHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class NeobursterConfigs {
@@ -529,12 +664,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neobursterXenoHealth = 60;
+        public double neobursterHealth = 60;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public double neobursterAttackDamage = 5;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float neobursterGrowthMultiplier = 1.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float neobursterHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int neobursterHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class NeoAdolescentConfigs {
@@ -542,7 +692,7 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neomorph_adolescentXenoHealth = 90;
+        public double neomorph_adolescentHealth = 90;
 
         @Configurable
         @Configurable.Synchronized
@@ -552,7 +702,22 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float neomorph_adolescentXenoTailAttackDamage = 3;
+        public float neomorph_adolescentTailAttackDamage = 3;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.DecimalRange(min = 1)
+        public float neomorph_adolescentGrowthMultiplier = 1.0f;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float neomorph_adolescentHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int neomorph_adolescentHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class NeomorphConfigs {
@@ -560,12 +725,12 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neomorphXenoHealth = 120;
+        public double neomorphHealth = 120;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double neomorphXenoArmor = 4;
+        public double neomorphArmor = 4;
 
         @Configurable
         @Configurable.Synchronized
@@ -575,7 +740,17 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float neomorphXenoTailAttackDamage = 3;
+        public float neomorphTailAttackDamage = 3;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float neomorphHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int neomorphHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class DTBConfigs {
@@ -583,17 +758,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double draconicTempleBeastXenoHealth = 300;
+        public double draconictemplebeastHealth = 300;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double draconicTempleBeastXenoArmor = 9;
+        public double draconictemplebeastArmor = 9;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double draconicTempleBeastAttackDamage = 9;
+        public double draconictemplebeastAttackDamage = 9;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float draconictemplebeastHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int draconictemplebeastHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class MHTBConfigs {
@@ -601,17 +786,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double moonlightHorrorTempleBeastXenoHealth = 300;
+        public double moonlighthorrortemplebeastHealth = 300;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double moonlightHorrorTempleBeastXenoArmor = 9;
+        public double moonlighthorrortemplebeastArmor = 9;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double moonlightHorrorTempleBeastAttackDamage = 9;
+        public double moonlighthorrortemplebeastAttackDamage = 9;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float moonlighthorrortemplebeastHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int moonlighthorrortemplebeastHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class RTBConfigs {
@@ -619,17 +814,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double ravenousTempleBeastXenoHealth = 300;
+        public double ravenoustemplebeastHealth = 300;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double ravenousTempleBeastXenoArmor = 9;
+        public double ravenoustemplebeastArmor = 9;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double ravenousTempleBeastAttackDamage = 9;
+        public double ravenoustemplebeastAttackDamage = 9;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float ravenoustemplebeastHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int ravenoustemplebeastHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class BaphomorphConfigs {
@@ -637,17 +842,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double baphomorphXenoHealth = 300;
+        public double baphomorphHealth = 300;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double baphomorphXenoArmor = 9;
+        public double baphomorphArmor = 9;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public double baphomorphAttackDamage = 9;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float baphomorphHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int baphomorphHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class HellmorphRunnerConfigs {
@@ -655,17 +870,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double hellmorph_runnerXenoHealth = 300;
+        public double hellmorph_runnerHealth = 300;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double hellmorph_runnerXenoArmor = 9;
+        public double hellmorph_runnerArmor = 9;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
         public double hellmorph_runnerAttackDamage = 9;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float hellmorph_runnerHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int hellmorph_runnerHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public static class HBursterConfigs {
@@ -673,17 +898,27 @@ public class GigeresqueConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public float hellbusterGrowthMultiplier = 1.0f;
+        public float hell_bursterGrowthMultiplier = 1.0f;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double hellbusterHealth = 30;
+        public double hell_bursterHealth = 30;
 
         @Configurable
         @Configurable.Synchronized
         @Configurable.DecimalRange(min = 1)
-        public double hellbusterAttackDamage = 5;
+        public double hell_bursterAttackDamage = 5;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public float hell_bursterHealOverTimeAmount = DEFAULT_HEAL_OVER_TIME_AMOUNT;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Range(min = 0)
+        public int hell_bursterHealOverTimeIntervalSeconds = DEFAULT_HEAL_OVER_TIME_INTERVAL_SECONDS;
     }
 
     public float getEggmorphTickTimer() {

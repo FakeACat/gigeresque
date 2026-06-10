@@ -41,25 +41,13 @@ public class AquaticAlienEntity extends AlienEntity {
 
     public static AttributeSupplier.@NotNull Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoHealth
-            )
-            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoArmor)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                9.0
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.aquatic_alienConfigs.aquatic_alienHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.aquatic_alienConfigs.aquatic_alienArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, 9.0)
             .add(Attributes.KNOCKBACK_RESISTANCE, 9.0)
-            .add(
-                Attributes.FOLLOW_RANGE,
-                32
-            )
+            .add(Attributes.FOLLOW_RANGE, 32)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticXenoAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.aquatic_alienConfigs.aquatic_alienAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 

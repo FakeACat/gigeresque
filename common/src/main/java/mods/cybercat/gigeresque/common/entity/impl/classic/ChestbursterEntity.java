@@ -34,22 +34,13 @@ public class ChestbursterEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.bursterConfigs.chestbursterHealth
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.chestbursterConfigs.chestbursterHealth)
             .add(Attributes.ARMOR, 0.0f)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                0.0f
-            )
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0f)
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
             .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                0.0f
-            )
+            .add(Attributes.ATTACK_DAMAGE, 0.0f)
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 

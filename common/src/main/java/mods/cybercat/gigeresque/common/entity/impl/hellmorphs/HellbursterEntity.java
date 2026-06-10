@@ -20,22 +20,13 @@ public class HellbursterEntity extends RunnerbursterEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterHealth
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.hell_bursterConfigs.hell_bursterHealth)
             .add(Attributes.ARMOR, 0.0f)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                0.0f
-            )
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0f)
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
             .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.hell_bursterConfigs.hell_bursterAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 

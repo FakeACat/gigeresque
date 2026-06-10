@@ -14,37 +14,86 @@ import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
 
 public class EnglishLanguageProvider extends FabricLanguageProvider {
 
-    public EnglishLanguageProvider(
-        FabricDataOutput dataOutput,
-        CompletableFuture<HolderLookup.Provider> registryLookup
+    private final String armor;
+    private final String ampule;
+
+    private EnglishLanguageProvider(
+        FabricDataOutput output,
+        CompletableFuture<HolderLookup.Provider> lookup,
+        String id,
+        String armor,
+        String ampule
     ) {
-        super(dataOutput, "en_us", registryLookup);
+        super(output, id, lookup);
+        this.armor = armor;
+        this.ampule = ampule;
+    }
+
+    public static EnglishLanguageProvider newZealand(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+        return new EnglishLanguageProvider(output, lookup, "en_nz", "Armour", "Ampoule");
+    }
+
+    public static EnglishLanguageProvider unitedStates(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+        return new EnglishLanguageProvider(output, lookup, "en_us", "Armor", "Ampule");
     }
 
     @Override
     public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder builder) {
         // Mob
-        builder.add(GigEntities.ALIEN.get(), "Entombed Interloper");
-        builder.add(GigEntities.AQUATIC_ALIEN.get(), "Threshing Interloper");
-        builder.add(GigEntities.AQUATIC_CHESTBURSTER.get(), "Threshing Burster");
-        builder.add(GigEntities.CHESTBURSTER.get(), "Chestburster");
-        builder.add(GigEntities.EGG.get(), "Strange Egg");
-        builder.add(GigEntities.FACEHUGGER.get(), "Facehugger");
-        builder.add(GigEntities.RUNNER_ALIEN.get(), "Lithe Interloper");
-        builder.add(GigEntities.RUNNERBURSTER.get(), "Lithe Burster");
-        builder.add(GigEntities.MUTANT_POPPER.get(), "Mutant Popper");
-        builder.add(GigEntities.MUTANT_HAMMERPEDE.get(), "Mutant Hammerpede");
-        builder.add(GigEntities.MUTANT_STALKER.get(), "Mutant Stalker");
-        builder.add(GigEntities.NEOBURSTER.get(), "Pale Burster");
-        builder.add(GigEntities.NEOMORPH_ADOLESCENT.get(), "Adolescent Pale");
-        builder.add(GigEntities.NEOMORPH.get(), "Maiming Pale");
-        builder.add(GigEntities.SPITTER.get(), "Melting Interloper");
-        builder.add(GigEntities.RAVENOUSTEMPLEBEAST.get(), "Rapacious Templebeast");
-        builder.add(GigEntities.DRACONICTEMPLEBEAST.get(), "Draconic Templebeast");
-        builder.add(GigEntities.MOONLIGHTHORRORTEMPLEBEAST.get(), "Moonlight Templebeast");
-        builder.add(GigEntities.BAPHOMORPH.get(), "Charnel Templebeast");
-        builder.add(GigEntities.HELLMORPH_RUNNER.get(), "Infernal Interloper");
-        builder.add(GigEntities.HELL_BURSTER.get(), "Infernal Burster");
+        record EntityEntry(
+            String id,
+            String name
+        ) {}
+        EntityEntry[] entityEntries = {
+            new EntityEntry("egg", "Strange Egg"),
+            new EntityEntry("facehugger", "Facehugger"),
+            new EntityEntry("chestburster", "Chestburster"),
+            new EntityEntry("alien", "Entombed Interloper"),
+
+            new EntityEntry("runnerburster", "Lithe Burster"),
+            new EntityEntry("runner_alien", "Lithe Interloper"),
+
+            new EntityEntry("aquatic_chestburster", "Threshing Burster"),
+            new EntityEntry("aquatic_alien", "Threshing Interloper"),
+
+            new EntityEntry("spitter", "Melting Interloper"),
+
+            new EntityEntry("hell_burster", "Infernal Burster"),
+            new EntityEntry("hellmorph_runner", "Infernal Interloper"),
+            new EntityEntry("baphomorph", "Charnel Templebeast"),
+
+            new EntityEntry("draconictemplebeast", "Draconic Templebeast"),
+            new EntityEntry("ravenoustemplebeast", "Rapacious Templebeast"),
+            new EntityEntry("moonlighthorrortemplebeast", "Moonlight Templebeast"),
+
+            new EntityEntry("hammerpede", "Mutant Hammerpede"),
+            new EntityEntry("popper", "Mutant Popper"),
+            new EntityEntry("stalker", "Mutant Stalker"),
+
+            new EntityEntry("neoburster", "Pale Burster"),
+            new EntityEntry("neomorph_adolescent", "Adolescent Pale"),
+            new EntityEntry("neomorph", "Maiming Pale"),
+        };
+        for (var entry : entityEntries) {
+            builder.add("entity.gigeresque." + entry.id, entry.name);
+            builder.add("item.gigeresque." + entry.id + "_spawn_egg", entry.name + " Spawn Egg");
+            builder.add("config.gigeresque.option." + entry.id + "Configs", entry.name + " Configs");
+            builder.add("config.gigeresque.option." + entry.id + "Health", entry.name + " Health");
+            builder.add("config.gigeresque.option." + entry.id + "Armor", entry.name + " " + armor);
+            builder.add("config.gigeresque.option." + entry.id + "AttackDamage", entry.name + " Attack Damage");
+            builder.add("config.gigeresque.option." + entry.id + "TailAttackDamage", entry.name + " Tail Attack Damage");
+            builder.add("config.gigeresque.option." + entry.id + "RangedAttackDamage", entry.name + " Ranged Attack Damage");
+            builder.add("config.gigeresque.option." + entry.id + "AttackSpeed", entry.name + " Attack Speed");
+            builder.add("config.gigeresque.option." + entry.id + "GrowthMultiplier", entry.name + " Growth Multiplier");
+            builder.add("config.gigeresque.option." + entry.id + "HealOverTimeAmount", entry.name + " Heal Amount");
+            builder.add("config.gigeresque.option." + entry.id + "HealOverTimeIntervalSeconds", entry.name + " Heal Interval (seconds)");
+        }
+        builder.add("config.gigeresque.option.facehuggerAttachTickTimer", "Facehugger Attach Tick Timer");
+        builder.add("config.gigeresque.option.impregnationTickTimer", "Impregnation Tick Timer");
+        builder.add("config.gigeresque.option.facehuggerGivesBlindness", "Facehuggers Give Blindness");
+        builder.add("config.gigeresque.option.enableFacehuggerAttachmentTimer", "Enable On-Screen Facehugger Timer");
+        builder.add("config.gigeresque.option.enableFacehuggerTimerTicks", "Make Facehugger Timer Screen Use Ticks");
+        builder.add("config.gigeresque.option.facehuggerStunTickTimer", "Facehugger Stun Timer");
         builder.add(GigEntities.BLOOD.get(), "Blood");
         builder.add(GigEntities.ACID.get(), "Acid");
         builder.add(GigEntities.ACID_PROJECTILE.get(), "Acid");
@@ -70,32 +119,11 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
 
         // Items
         builder.add(GigItems.BLACK_FLUID_BUCKET.get(), "Black Fluid Bucket");
-        builder.add(GigItems.ALIEN_SPAWN_EGG.get(), "Entombed Interloper Spawn Egg");
-        builder.add(GigItems.AQUATIC_ALIEN_SPAWN_EGG.get(), "Threshing Interloper Spawn Egg");
-        builder.add(GigItems.AQUATIC_CHESTBURSTER_SPAWN_EGG.get(), "Threshing Burster Spawn Egg");
-        builder.add(GigItems.CHESTBURSTER_SPAWN_EGG.get(), "Chestburster Spawn Egg");
-        builder.add(GigItems.EGG_SPAWN_EGG.get(), "Strange Egg Spawn Egg");
-        builder.add(GigItems.FACEHUGGER_SPAWN_EGG.get(), "Facehugger Spawn Egg");
-        builder.add(GigItems.RUNNER_ALIEN_SPAWN_EGG.get(), "Lithe Interloper Spawn Egg");
-        builder.add(GigItems.RUNNERBURSTER_SPAWN_EGG.get(), "Lithe Burster Spawn Egg");
-        builder.add(GigItems.MUTANT_POPPER_SPAWN_EGG.get(), "Mutant Popper Spawn Egg");
-        builder.add(GigItems.MUTANT_HAMMERPEDE_SPAWN_EGG.get(), "Mutant Hammerpede Spawn Egg");
-        builder.add(GigItems.MUTANT_STALKER_SPAWN_EGG.get(), "Mutant Stalker Spawn Egg");
-        builder.add(GigItems.NEOBURSTER_SPAWN_EGG.get(), "Pale Burster Spawn Egg");
-        builder.add(GigItems.NEOMORPH_ADOLESCENT_SPAWN_EGG.get(), "Adolescent Pale Spawn Egg");
-        builder.add(GigItems.NEOMORPH_SPAWN_EGG.get(), "Maiming Pale Spawn Egg");
-        builder.add(GigItems.SPITTER_SPAWN_EGG.get(), "Melting Interloper Spawn Egg");
-        builder.add(GigItems.RAVENOUSTEMPLEBEAST_SPAWN_EGG.get(), "Rapacious Templebeast Spawn Egg");
-        builder.add(GigItems.DRACONICTEMPLEBEAST_SPAWN_EGG.get(), "Draconic Templebeast Spawn Egg");
-        builder.add(GigItems.MOONLIGHTHORRORTEMPLEBEAST_SPAWN_EGG.get(), "Moonlight Templebeast Spawn Egg");
-        builder.add(GigItems.HELLMORPH_RUNNER_SPAWN_EGG.get(), "Infernal Interloper Spawn Egg");
-        builder.add(GigItems.BAPHOMORPH_SPAWN_EGG.get(), "Charnel Templebeast Spawn Egg");
-        builder.add(GigItems.HELL_BURSTER_SPAWN_EGG.get(), "Infernal Burster Spawn Egg");
         builder.add(GigItems.SURGERY_KIT.get(), "Surgery Kit");
         builder.add(GigItems.TRACKER.get(), "Memo Stone");
-        builder.add(GigItems.SEALED_AMPOULE_GOO.get(), "Ampule of Black Fluid");
-        builder.add(GigItems.SEALED_AMPOULE_ACID.get(), "Ampule of Acid");
-        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(), "Empty Ampule");
+        builder.add(GigItems.SEALED_AMPOULE_GOO.get(), ampule + " of Black Fluid");
+        builder.add(GigItems.SEALED_AMPOULE_ACID.get(), ampule + " of Acid");
+        builder.add(GigItems.SEALED_AMPOULE_EMPTY.get(), "Empty " + ampule);
         builder.add(GigItems.DEV_DEBUG_STICK.get(), "You sleep now");
 
         // Blocks
@@ -240,126 +268,30 @@ public class EnglishLanguageProvider extends FabricLanguageProvider {
         builder.add("subtitles.gigeresque.aqua_landclaw", "Something whooshes");
 
         // Configs
-        builder.add("config.gigeresque.option.classicXenoConfigs", "Entombed Interloper Configs");
-        builder.add("config.gigeresque.option.aquaticXenoConfigs", "Threshing Interloper Configs");
-        builder.add("config.gigeresque.option.hammerpedeConfigs", "Hammerpede Configs");
-        builder.add("config.gigeresque.option.popperConfigs", "Popper Configs");
-        builder.add("config.gigeresque.option.runnerbusterConfigs", "Lithe Burster Configs");
-        builder.add("config.gigeresque.option.stalkerConfigs", "Stalker Configs");
-        builder.add("config.gigeresque.option.runnerConfigs", "Lithe Interloper Configs");
-        builder.add("config.gigeresque.option.eggConfigs", "Strange Egg Configs");
-        builder.add("config.gigeresque.option.spitterConfigs", "Melting Interloper Configs");
-        builder.add("config.gigeresque.option.neobursterConfigs", "Pale Burster Configs");
-        builder.add("config.gigeresque.option.neomorphAdolescentConfigs", "Adolescent Pale Configs");
-        builder.add("config.gigeresque.option.neomorphConfigs", "Maiming Pale Configs");
-        builder.add("config.gigeresque.option.draconicTempleBeastConfigs", "Draconic Templebeast Configs");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastConfigs", "Moonlight Templebeast Configs");
-        builder.add("config.gigeresque.option.ravenousTempleBeastConfigs", "Rapacious Templebeast Configs");
-        builder.add("config.gigeresque.option.baphomorphConfigs", "Charnel Templebeast Configs");
-        builder.add("config.gigeresque.option.hellmorphrunnerConfigs", "Infernal Interloper Configs");
-        builder.add("config.gigeresque.option.facehuggerConfigs", "Facehugger Configs");
         builder.add("config.gigeresque.option.alienblockConfigs", "Block Configs");
-        builder.add("config.gigeresque.option.bursterConfigs", "Burster Configs");
         builder.add("config.gigeresque.option.isolationMode", "Isolation Mode");
         builder.add("config.gigeresque.option.surgeryKit", "Surgery Kit");
         builder.add("config.gigeresque.option.acidResistantBlocks", "Acid-Resistant Blocks");
         builder.add("config.gigeresque.option.acidResistantBlocks.@Tooltip", "Blocks that will not be destroyed by acid.");
-        builder.add("config.gigeresque.option.alienGrowthMultiplier", "Entombed Interloper Growth Multiplier");
-        builder.add("config.gigeresque.option.alienGrowthMultiplier.@Tooltip", "The rate at which aliens mature.");
-        builder.add("config.gigeresque.option.aquaticAlienGrowthMultiplier", "Threshing Interloper Growth Multiplier");
-        builder.add("config.gigeresque.option.aquaticChestbursterGrowthMultiplier", "Threshing Burster Growth Multiplier");
-        builder.add("config.gigeresque.option.chestbursterGrowthMultiplier", "Chestburster Growth Multiplier");
         builder.add("config.gigeresque.option.eggmorphTickTimer", "Eggmorph Tick Timer");
-        builder.add("config.gigeresque.option.facehuggerAttachTickTimer", "Facehugger Attach Tick Timer");
-        builder.add("config.gigeresque.option.impregnationTickTimer", "Impregnation Tick Timer");
-        builder.add("config.gigeresque.option.runnerAlienGrowthMultiplier", "Lithe Interloper Growth Multiplier");
-        builder.add("config.gigeresque.option.runnerbursterGrowthMultiplier", "Lithe Burster Growth Multiplier");
         builder.add("config.gigeresque.option.gooEffectTickTimer", "Goo Effect Tick Timer");
         builder.add("config.gigeresque.option.maxSurgeryKitUses", "Max Uses of Surgery Kits");
-        builder.add("config.gigeresque.option.classicXenoHealth", "Entombed Interloper Health");
-        builder.add("config.gigeresque.option.classicXenoArmor", "Entombed Interloper Armor");
-        builder.add("config.gigeresque.option.classicXenoAttackDamage", "Entombed Interloper Attack Damage");
-        builder.add("config.gigeresque.option.aquaticXenoHealth", "Threshing Interloper Health");
-        builder.add("config.gigeresque.option.aquaticXenoArmor", "Threshing Interloper Armor");
-        builder.add("config.gigeresque.option.aquaticXenoAttackDamage", "Threshing Interloper Attack Damage");
-        builder.add("config.gigeresque.option.hammerpedeHealth", "Hammerpede Health");
-        builder.add("config.gigeresque.option.hammerpedeAttackDamage", "Hammerpede Attack Damage");
-        builder.add("config.gigeresque.option.popperHealth", "Popper Health");
-        builder.add("config.gigeresque.option.popperAttackDamage", "Popper Attack Damage");
-        builder.add("config.gigeresque.option.runnerbusterHealth", "Lithe Burster Health");
-        builder.add("config.gigeresque.option.runnerbusterAttackDamage", "Lithe Burster Attack Damage");
-        builder.add("config.gigeresque.option.stalkerXenoHealth", "Stalker Health");
-        builder.add("config.gigeresque.option.stalkerXenoArmor", "Stalker Armor");
-        builder.add("config.gigeresque.option.stalkerAttackDamage", "Stalker Attack Damage");
-        builder.add("config.gigeresque.option.runnerXenoHealth", "Lithe Interloper Health");
-        builder.add("config.gigeresque.option.runnerXenoArmor", "Lithe Interloper Armor");
-        builder.add("config.gigeresque.option.runnerXenoAttackDamage", "Lithe Interloper Attack Damage");
-        builder.add("config.gigeresque.option.alieneggHealth", "Strange Egg Health");
-        builder.add("config.gigeresque.option.chestbursterHealth", "Chestburster Health");
-        builder.add("config.gigeresque.option.facehuggerHealth", "Facehugger Health");
-        builder.add("config.gigeresque.option.alienegg_spawn_weight", "Strange Egg Spawn Weight");
-        builder.add("config.gigeresque.option.alienegg_min_group", "Strange Egg Spawn Min Group Size");
-        builder.add("config.gigeresque.option.alienegg_max_group", "Strange Egg Spawn Max Group Size");
-        builder.add("config.gigeresque.option.classicXenoAttackSpeed", "Entombed Interloper Attack Movement Speed");
-        builder.add("config.gigeresque.option.stalkerAttackSpeed", "Stalker Attack Movement Speed");
-        builder.add("config.gigeresque.option.runnerXenoAttackSpeed", "Lithe Interloper Attack Movement Speed");
-        builder.add("config.gigeresque.option.classicXenoTailAttackDamage", "Entombed Interloper Tail Extra Damage");
-        builder.add("config.gigeresque.option.aquaticXenoTailAttackDamage", "Threshing Interloper Tail Extra Damage");
-        builder.add("config.gigeresque.option.stalkerTailAttackDamage", "Stalker Tail Extra Damage");
-        builder.add("config.gigeresque.option.runnerXenoTailAttackDamage", "Lithe Interloper Tail Extra Damage");
         builder.add("config.gigeresque.option.alieneggHatchRange", "Egg Hatch Range");
         builder.add("config.gigeresque.option.acidDamage", "Acid Damage Per Tick");
         builder.add("config.gigeresque.option.xenoMaxSoundRange", "Interloper Audio Range");
         builder.add("config.gigeresque.option.gooMutantBloodType", "Goo Mutant Blood Type");
         builder.add("config.gigeresque.option.neomorphBloodType", "Neomorph Blood Type");
         builder.add("config.gigeresque.option.surgeryKitCooldownTicks", "Surgery Kit Cooldown Ticks");
-        builder.add("config.gigeresque.option.facehuggerGivesBlindness", "Facehuggers Give Blindness");
-        builder.add("config.gigeresque.option.spitterXenoHealth", "Melting Interloper Health");
-        builder.add("config.gigeresque.option.spitterXenoArmor", "Melting Interloper Armor");
-        builder.add("config.gigeresque.option.spitterAttackDamage", "Melting Interloper Attack Damage");
-        builder.add("config.gigeresque.option.spitterXenoTailAttackDamage", "Melting Interloper Tail Extra Damage");
-        builder.add("config.gigeresque.option.spitterRangeAttackDamage", "Melting Interloper Ranged Attack Damage");
-        builder.add("config.gigeresque.option.neobursterXenoHealth", "Pale Burster Health");
-        builder.add("config.gigeresque.option.neobursterAttackDamage", "Pale Burster Attack Damage");
-        builder.add("config.gigeresque.option.neomorph_adolescentXenoHealth", "Adolescent Pale Health");
-        builder.add("config.gigeresque.option.neomorph_adolescentAttackDamage", "Adolescent Pale Attack Damage");
-        builder.add("config.gigeresque.option.neomorph_adolescentXenoTailAttackDamage", "Adolescent Pale Tail Extra Damage");
-        builder.add("config.gigeresque.option.neomorphXenoHealth", "Maiming Pale Health");
-        builder.add("config.gigeresque.option.neomorphXenoArmor", "Maiming Pale Armor");
-        builder.add("config.gigeresque.option.neomorphAttackDamage", "Maiming Pale Attack Damage");
-        builder.add("config.gigeresque.option.neomorphXenoTailAttackDamage", "Maiming Pale Tail Extra Damage");
-        builder.add("config.gigeresque.option.draconicTempleBeastXenoHealth", "Draconic Templebeast Health");
-        builder.add("config.gigeresque.option.draconicTempleBeastXenoArmor", "Draconic Templebeast Armor");
-        builder.add("config.gigeresque.option.draconicTempleBeastAttackDamage", "Draconic Templebeast Attack Damage");
-        builder.add("config.gigeresque.option.ravenousTempleBeastXenoHealth", "Rapacious Templebeast Health");
-        builder.add("config.gigeresque.option.ravenousTempleBeastXenoArmor", "Rapacious Templebeast Armor");
-        builder.add("config.gigeresque.option.ravenousTempleBeastAttackDamage", "Rapacious Templebeast Attack Damage");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastXenoHealth", "Moonlight Templebeast Health");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastXenoArmor", "Moonlight Templebeast Armor");
-        builder.add("config.gigeresque.option.moonlightHorrorTempleBeastAttackDamage", "Moonlight Templebeast Attack Damage");
-        builder.add("config.gigeresque.option.baphomorphXenoHealth", "Charnel Templebeast Health");
-        builder.add("config.gigeresque.option.baphomorphXenoArmor", "Charnel Templebeast Armor");
-        builder.add("config.gigeresque.option.baphomorphAttackDamage", "Charnel Templebeast Attack Damage");
-        builder.add("config.gigeresque.option.hellmorph_runnerXenoHealth", "Infernal Interloper Health");
-        builder.add("config.gigeresque.option.hellmorph_runnerXenoArmor", "Infernal Interloper Armor");
-        builder.add("config.gigeresque.option.hellmorph_runnerAttackDamage", "Infernal Interloper Attack Damage");
         builder.add("config.gigeresque.option.sporeTickTimer", "Spore Tick Timer");
         builder.add("config.gigeresque.option.alienblockHardness", "Catacomb Block Hardness");
         builder.add("config.gigeresque.option.alienblockResistance", "Catacomb Block Resistance");
         builder.add("config.gigeresque.option.enableDevparticles", "Enable Dev Particles");
         builder.add("config.gigeresque.option.enableDevEntites", "Enable Dev Entities");
         builder.add("config.gigeresque.option.blackfuildNonrepacle", "Makes Black Fluid Nonreplacable");
-        builder.add("config.gigeresque.option.facehuggerStunTickTimer", "Facehugger Stun Timer");
-        builder.add("config.gigeresque.option.enableFacehuggerAttachmentTimer", "Enable On-Screen Facehugger Timer");
-        builder.add("config.gigeresque.option.enableFacehuggerTimerTicks", "Make Facehugger Timer Screen Use Ticks");
         builder.add("config.gigeresque.option.enabledCreativeBootAcidProtection", "Make Acid Not Damage Boots of Creative Players");
         builder.add("config.gigeresque.option.enableAcidLavaRemoval", "Make Lava be Able to Remove Acid/Black Goo Bleeding");
         builder.add("config.gigeresque.option.enableLogging", "Enable Extra Logging");
         builder.add("config.gigeresque.option.enablePandoraEffects", "Enable Pandora Effect");
-        builder.add("config.gigeresque.option.hellbusterConfigs", "Infernal Burster Configs");
-        builder.add("config.gigeresque.option.hellbusterGrowthMultiplier", "Infernal Burster Growth Multiplier");
-        builder.add("config.gigeresque.option.hellbusterHealth", "Infernal Burster Health");
-        builder.add("config.gigeresque.option.hellbusterAttackDamage", "Infernal Burster Attack Damage");
         builder.add("config.gigeresque.option.enablePeacefulModeTargetDisable", "Peaceful Mode Target Disable All");
         builder.add("config.gigeresque.option.peacefulModeIgnorePlayersOnly", "Peaceful Mode Ignore Players Only");
         builder.add("config.gigeresque.option.enablePeacefulModeRemoval", "Enable Peaceful Mode Removal");

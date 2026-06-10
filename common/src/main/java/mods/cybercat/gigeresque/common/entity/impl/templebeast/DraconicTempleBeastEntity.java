@@ -31,19 +31,13 @@ public class DraconicTempleBeastEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.draconicTempleBeastConfigs.draconicTempleBeastXenoHealth
-            )
-            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.draconicTempleBeastConfigs.draconicTempleBeastXenoArmor)
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.draconictemplebeastConfigs.draconictemplebeastHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.draconictemplebeastConfigs.draconictemplebeastArmor)
             .add(Attributes.ARMOR_TOUGHNESS, 0.0)
             .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
             .add(Attributes.FOLLOW_RANGE, 16.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.draconicTempleBeastConfigs.draconicTempleBeastAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.draconictemplebeastConfigs.draconictemplebeastAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 5.0);
     }
 

@@ -36,25 +36,13 @@ public class SpitterEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.spitterConfigs.spitterXenoHealth
-            )
-            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.spitterConfigs.spitterXenoArmor)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                0.0
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.spitterConfigs.spitterHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.spitterConfigs.spitterArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, 0.0)
             .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
-            .add(
-                Attributes.FOLLOW_RANGE,
-                16.0
-            )
+            .add(Attributes.FOLLOW_RANGE, 16.0)
             .add(Attributes.MOVEMENT_SPEED, 0.23000000417232513)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.spitterConfigs.spitterAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.spitterConfigs.spitterAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 0.3);
     }
 

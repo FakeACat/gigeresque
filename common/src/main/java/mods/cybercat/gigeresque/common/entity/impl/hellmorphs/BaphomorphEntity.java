@@ -29,25 +29,13 @@ public class BaphomorphEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphXenoHealth
-            )
-            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphXenoArmor)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphXenoArmor
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphHealth)
+            .add(Attributes.ARMOR, CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphArmor)
             .add(Attributes.KNOCKBACK_RESISTANCE, 8.0)
-            .add(
-                Attributes.FOLLOW_RANGE,
-                32.0
-            )
+            .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphAttackDamage
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 

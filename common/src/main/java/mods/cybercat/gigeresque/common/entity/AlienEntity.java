@@ -242,7 +242,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
 
         GrowthOptions growth,
 
-        boolean completelyBlocksMovement
+        boolean completelyBlocksMovement,
+
+        float healOverTimeAmount,
+        int healOverTimeIntervalSeconds
     ) {
         public static final float STANDARD_SLAP_CHANCE = 0.1f;
         public static final float TEMPLEBEAST_SLAP_CHANCE = 0.2f;
@@ -255,7 +258,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             false,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.eggConfigs.alieneggHealOverTimeAmount,
+            CommonMod.config.entityConfigs.eggConfigs.alieneggHealOverTimeIntervalSeconds
         );
         public static final Type FACEHUGGER = new Type(
             BloodType.ACID,
@@ -265,7 +270,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             false,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.facehuggerConfigs.facehuggerHealOverTimeAmount,
+            CommonMod.config.entityConfigs.facehuggerConfigs.facehuggerHealOverTimeIntervalSeconds
         );
         public static final Type CLASSIC = new Type(
             BloodType.ACID,
@@ -274,8 +281,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             true,
             STANDARD_SLAP_CHANCE,
             true,
-            GrowthOptions.adult(CommonMod.config.entityConfigs.classicXenoConfigs.alienGrowthMultiplier),
-            false
+            GrowthOptions.adult(CommonMod.config.entityConfigs.alienConfigs.alienGrowthMultiplier),
+            false,
+            CommonMod.config.entityConfigs.alienConfigs.alienHealOverTimeAmount,
+            CommonMod.config.entityConfigs.alienConfigs.alienHealOverTimeIntervalSeconds
         );
         public static final Type RUNNER = new Type(
             BloodType.ACID,
@@ -284,8 +293,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             false,
             STANDARD_SLAP_CHANCE,
             true,
-            GrowthOptions.adult(CommonMod.config.entityConfigs.runnerbusterConfigs.runnerAlienGrowthMultiplier),
-            false
+            GrowthOptions.adult(CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienGrowthMultiplier),
+            false,
+            CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienHealOverTimeAmount,
+            CommonMod.config.entityConfigs.runner_alienConfigs.runner_alienHealOverTimeIntervalSeconds
         );
         public static final Type AQUATIC = new Type(
             BloodType.ACID,
@@ -294,8 +305,10 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             false,
             STANDARD_SLAP_CHANCE,
             true,
-            GrowthOptions.adult(CommonMod.config.entityConfigs.aquaticXenoConfigs.aquaticAlienGrowthMultiplier),
-            false
+            GrowthOptions.adult(CommonMod.config.entityConfigs.aquatic_alienConfigs.aquatic_alienGrowthMultiplier),
+            false,
+            CommonMod.config.entityConfigs.aquatic_alienConfigs.aquatic_alienHealOverTimeAmount,
+            CommonMod.config.entityConfigs.aquatic_alienConfigs.aquatic_alienHealOverTimeIntervalSeconds
         );
         public static final Type SPITTER = new Type(
             BloodType.ACID,
@@ -305,7 +318,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             STANDARD_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH, // TODO(acats) maybe add growth
-            false
+            false,
+            CommonMod.config.entityConfigs.spitterConfigs.spitterHealOverTimeAmount,
+            CommonMod.config.entityConfigs.spitterConfigs.spitterHealOverTimeIntervalSeconds
         );
         public static final Type DRACONIC_TEMPLEBEAST = new Type(
             BloodType.ACID,
@@ -315,7 +330,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             TEMPLEBEAST_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.draconictemplebeastConfigs.draconictemplebeastHealOverTimeAmount,
+            CommonMod.config.entityConfigs.draconictemplebeastConfigs.draconictemplebeastHealOverTimeIntervalSeconds
         );
         public static final Type RAVENOUS_TEMPLEBEAST = new Type(
             BloodType.ACID,
@@ -325,7 +342,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             TEMPLEBEAST_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.ravenoustemplebeastConfigs.ravenoustemplebeastHealOverTimeAmount,
+            CommonMod.config.entityConfigs.ravenoustemplebeastConfigs.ravenoustemplebeastHealOverTimeIntervalSeconds
         );
         public static final Type MOONLIGHT_HORROR_TEMPLEBEAST = new Type(
             BloodType.ACID,
@@ -335,7 +354,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             TEMPLEBEAST_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.moonlighthorrortemplebeastConfigs.moonlighthorrortemplebeastHealOverTimeAmount,
+            CommonMod.config.entityConfigs.moonlighthorrortemplebeastConfigs.moonlighthorrortemplebeastHealOverTimeIntervalSeconds
         );
         public static final Type CHESTBURSTER = new Type(
             BloodType.ACID,
@@ -345,10 +366,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             true,
             GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                CommonMod.config.entityConfigs.chestbursterConfigs.chestbursterGrowthMultiplier,
                 prev -> GigEntities.RUNNERBURSTER.get().create(prev.level())
             ),
-            false
+            false,
+            CommonMod.config.entityConfigs.chestbursterConfigs.chestbursterHealOverTimeAmount,
+            CommonMod.config.entityConfigs.chestbursterConfigs.chestbursterHealOverTimeIntervalSeconds
         );
         public static final Type RUNNERBURSTER = new Type(
             BloodType.ACID,
@@ -358,10 +381,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             true,
             GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.runnerbursterGrowthMultiplier,
+                CommonMod.config.entityConfigs.runnerbursterConfigs.runnerbursterGrowthMultiplier,
                 prev -> (prev.growsIntoRunner ? GigEntities.RUNNER_ALIEN : GigEntities.ALIEN).get().create(prev.level())
             ),
-            false
+            false,
+            CommonMod.config.entityConfigs.runnerbursterConfigs.runnerbursterHealOverTimeAmount,
+            CommonMod.config.entityConfigs.runnerbursterConfigs.runnerbursterHealOverTimeIntervalSeconds
         );
         public static final Type AQUATIC_CHESTBURSTER = new Type(
             BloodType.ACID,
@@ -371,10 +396,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             true,
             GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.aquaticChestbursterGrowthMultiplier,
+                CommonMod.config.entityConfigs.aquatic_chestbursterConfigs.aquatic_chestbursterGrowthMultiplier,
                 prev -> GigEntities.AQUATIC_ALIEN.get().create(prev.level())
             ),
-            false
+            false,
+            CommonMod.config.entityConfigs.aquatic_chestbursterConfigs.aquatic_chestbursterHealOverTimeAmount,
+            CommonMod.config.entityConfigs.aquatic_chestbursterConfigs.aquatic_chestbursterHealOverTimeIntervalSeconds
         );
         public static final Type HELLBURSTER = new Type(
             BloodType.ACID,
@@ -384,7 +411,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             true,
             GrowthOptions.immature(
-                CommonMod.config.entityConfigs.hellbusterConfigs.hellbusterGrowthMultiplier,
+                CommonMod.config.entityConfigs.hell_bursterConfigs.hell_bursterGrowthMultiplier,
                 prev -> {
                     var typeSupplier = prev.level().random.nextBoolean()
                         ? GigEntities.BAPHOMORPH
@@ -392,7 +419,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                     return typeSupplier.get().create(prev.level());
                 }
             ),
-            false
+            false,
+            CommonMod.config.entityConfigs.hell_bursterConfigs.hell_bursterHealOverTimeAmount,
+            CommonMod.config.entityConfigs.hell_bursterConfigs.hell_bursterHealOverTimeIntervalSeconds
         );
         public static final Type BAPHOMORPH = new Type(
             BloodType.ACID,
@@ -402,7 +431,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             TEMPLEBEAST_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphHealOverTimeAmount,
+            CommonMod.config.entityConfigs.baphomorphConfigs.baphomorphHealOverTimeIntervalSeconds
         );
         public static final Type HELLMORPH_RUNNER = new Type(
             BloodType.ACID,
@@ -412,7 +443,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             STANDARD_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH, // TODO(acats) maybe add growth
-            false
+            false,
+            CommonMod.config.entityConfigs.hellmorph_runnerConfigs.hellmorph_runnerHealOverTimeAmount,
+            CommonMod.config.entityConfigs.hellmorph_runnerConfigs.hellmorph_runnerHealOverTimeIntervalSeconds
         );
         public static final Type HAMMERPEDE = new Type(
             CommonMod.config.entityConfigs.gooMutantBloodType,
@@ -422,7 +455,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             false,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.hammerpedeConfigs.hammerpedeHealOverTimeAmount,
+            CommonMod.config.entityConfigs.hammerpedeConfigs.hammerpedeHealOverTimeIntervalSeconds
         );
         public static final Type POPPER = new Type(
             CommonMod.config.entityConfigs.gooMutantBloodType,
@@ -432,7 +467,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             false,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.popperConfigs.popperHealOverTimeAmount,
+            CommonMod.config.entityConfigs.popperConfigs.popperHealOverTimeIntervalSeconds
         );
         public static final Type STALKER = new Type(
             CommonMod.config.entityConfigs.gooMutantBloodType,
@@ -442,7 +479,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             true,
             GrowthOptions.NO_GROWTH,
-            false
+            false,
+            CommonMod.config.entityConfigs.stalkerConfigs.stalkerHealOverTimeAmount,
+            CommonMod.config.entityConfigs.stalkerConfigs.stalkerHealOverTimeIntervalSeconds
         );
         public static final Type NEOBURSTER = new Type(
             CommonMod.config.entityConfigs.neomorphBloodType,
@@ -452,10 +491,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             false,
             GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                CommonMod.config.entityConfigs.neobursterConfigs.neobursterGrowthMultiplier,
                 prev -> GigEntities.NEOMORPH_ADOLESCENT.get().create(prev.level())
             ),
-            false
+            false,
+            CommonMod.config.entityConfigs.neobursterConfigs.neobursterHealOverTimeAmount,
+            CommonMod.config.entityConfigs.neobursterConfigs.neobursterHealOverTimeIntervalSeconds
         );
         public static final Type NEOMORPH_ADOLESCENT = new Type(
             CommonMod.config.entityConfigs.neomorphBloodType,
@@ -465,10 +506,12 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             0.0f,
             true,
             GrowthOptions.immature(
-                CommonMod.config.entityConfigs.bursterConfigs.chestbursterGrowthMultiplier,
+                CommonMod.config.entityConfigs.neomorph_adolescentConfigs.neomorph_adolescentGrowthMultiplier,
                 prev -> GigEntities.NEOMORPH.get().create(prev.level())
             ),
-            false
+            false,
+            CommonMod.config.entityConfigs.neomorph_adolescentConfigs.neomorph_adolescentHealOverTimeAmount,
+            CommonMod.config.entityConfigs.neomorph_adolescentConfigs.neomorph_adolescentHealOverTimeIntervalSeconds
         );
         public static final Type NEOMORPH = new Type(
             CommonMod.config.entityConfigs.neomorphBloodType,
@@ -478,7 +521,9 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             STANDARD_SLAP_CHANCE,
             true,
             GrowthOptions.NO_GROWTH, // TODO(acats) maybe add growth
-            false
+            false,
+            CommonMod.config.entityConfigs.neomorphConfigs.neomorphHealOverTimeAmount,
+            CommonMod.config.entityConfigs.neomorphConfigs.neomorphHealOverTimeIntervalSeconds
         );
     }
 
@@ -791,8 +836,8 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                         this.getDisplayName().getString()
                     );
                 }
-                if (healCounter >= 20 && healCounter > this.lastHurt) {
-                    var healAmount = 3.5833F;
+                if (healCounter >= type.healOverTimeIntervalSeconds && healCounter > this.lastHurt) {
+                    var healAmount = type.healOverTimeAmount;
                     if (
                         this.level()
                             .getBlockStatesIfLoaded(this.getBoundingBox().inflate(5))

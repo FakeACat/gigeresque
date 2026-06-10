@@ -33,25 +33,13 @@ public class NeomorphAdolescentEntity extends AlienEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-            .add(
-                Attributes.MAX_HEALTH,
-                CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentXenoHealth
-            )
+            .add(Attributes.MAX_HEALTH, CommonMod.config.entityConfigs.neomorph_adolescentConfigs.neomorph_adolescentHealth)
             .add(Attributes.ARMOR, 0.0f)
-            .add(
-                Attributes.ARMOR_TOUGHNESS,
-                6.0
-            )
+            .add(Attributes.ARMOR_TOUGHNESS, 6.0)
             .add(Attributes.KNOCKBACK_RESISTANCE, 7.0)
-            .add(
-                Attributes.FOLLOW_RANGE,
-                32.0
-            )
+            .add(Attributes.FOLLOW_RANGE, 32.0)
             .add(Attributes.MOVEMENT_SPEED, 0.3300000041723251)
-            .add(
-                Attributes.ATTACK_DAMAGE,
-                CommonMod.config.entityConfigs.neomorphAdolescentConfigs.neomorph_adolescentAttackDamage + 5
-            )
+            .add(Attributes.ATTACK_DAMAGE, CommonMod.config.entityConfigs.neomorph_adolescentConfigs.neomorph_adolescentAttackDamage)
             .add(Attributes.ATTACK_KNOCKBACK, 1.0);
     }
 

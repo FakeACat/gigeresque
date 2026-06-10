@@ -14,6 +14,7 @@ import net.minecraft.world.level.GameRules;
 import mods.cybercat.gigeresque.client.FabricHeadOffsetReloadListener;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
@@ -50,12 +51,13 @@ public final class FabricMod implements ModInitializer {
             .registerReloadListener(new FabricHeadOffsetReloadListener());
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
         MobSpawn.initialize();
+        // TODO(acats) unify between mod loaders
         FabricDefaultAttributeRegistry.register(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes());
         // FabricDefaultAttributeRegistry.register(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(
             GigEntities.AQUATIC_CHESTBURSTER.get(),
-            ChestbursterEntity.createAttributes()
+            AquaticChestbursterEntity.createAttributes()
         );
         FabricDefaultAttributeRegistry.register(GigEntities.CHESTBURSTER.get(), ChestbursterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.EGG.get(), AlienEggEntity.createAttributes());
