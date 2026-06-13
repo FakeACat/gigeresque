@@ -28,7 +28,7 @@ public class ClassicAgingAzLayer<T extends AlienEntity> implements AzRenderLayer
         AzRendererPipeline<UUID, T> renderPipeline = context.rendererPipeline();
         var rendertype = RenderType.entityTranslucentCull(textureLocation);
 
-        if (alien.growing() && alien.isAlive()) {
+        if (alien.growing()) {
             context.setRenderType(rendertype);
             context.setVertexConsumer(context.multiBufferSource().getBuffer(rendertype));
 
