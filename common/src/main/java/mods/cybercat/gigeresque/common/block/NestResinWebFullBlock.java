@@ -11,8 +11,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.entity.EntityTypeTest;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
@@ -23,14 +21,11 @@ import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 import mods.cybercat.gigeresque.common.status.effect.GigStatusEffects;
-import mods.cybercat.gigeresque.common.tags.GigTags;
 import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 public class NestResinWebFullBlock extends AbstractNestBlock {
 
     private int standingTick = 0;
-
-    private static final int CHECK_RADIUS = CommonMod.config.alienblockConfigs.resinEntityCheckRange;
 
     public NestResinWebFullBlock(Properties settings) {
         super(settings);
@@ -55,10 +50,6 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
                 return;
             }
 
-            if (CommonMod.config.alienblockConfigs.enableResinAlienCheck && !isTaggedEntityNearby(world, pos)) {
-                return;
-            }
-
             if (livingEntity instanceof Player player) {
                 handleEggMorphingForPlayer(player, state, pos, entity, world);
             } else if (livingEntity instanceof Mob mob) {
@@ -77,14 +68,6 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
         return context instanceof EntityCollisionContext entitycollisioncontext && entitycollisioncontext.getEntity() instanceof AlienEntity
             ? Block.box(0, 0, 0, 0, 0, 0)
             : super.getCollisionShape(state, world, pos, context);
-    }
-
-    private boolean isTaggedEntityNearby(Level world, BlockPos pos) {
-        return !world.getEntities(
-            EntityTypeTest.forClass(AlienEntity.class),
-            new AABB(pos).inflate(NestResinWebFullBlock.CHECK_RADIUS),
-            e -> e.getType().is(GigTags.GIG_CLASSIC)
-        ).isEmpty();
     }
 
     private void handleEggMorphingForPlayer(Player player, BlockState state, BlockPos pos, Entity sourceEntity, Level world) {
