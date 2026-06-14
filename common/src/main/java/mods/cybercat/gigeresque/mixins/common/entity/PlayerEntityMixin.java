@@ -20,10 +20,12 @@ import java.util.Objects;
 
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
+import mods.cybercat.gigeresque.common.entity.GigPlayer;
 import mods.cybercat.gigeresque.common.entity.impl.classic.FacehuggerEntity;
+import mods.cybercat.gigeresque.common.util.GigEntityUtils;
 
 @Mixin(Player.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin extends LivingEntity implements GigPlayer {
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
@@ -95,6 +97,24 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 }
             }
         }
+    }
+
+    @Unique
+    private int ticksInResin = 0;
+
+    @Inject(at = @At("HEAD"), method = "tick")
+    public void gigeresque$resetTicksInResinIfNoLongerStuck(CallbackInfo ci) {
+        if (!GigEntityUtils.inResinEnoughToBeEggmorphed(this)) ticksInResin = 0;
+    }
+
+    @Override
+    public void setTicksInResin(int ticks) {
+        ticksInResin = ticks;
+    }
+
+    @Override
+    public int ticksInResin() {
+        return ticksInResin;
     }
 
 }

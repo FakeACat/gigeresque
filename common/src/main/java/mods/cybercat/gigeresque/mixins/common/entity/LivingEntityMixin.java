@@ -115,11 +115,7 @@ public abstract class LivingEntityMixin extends Entity {
                     }
                 }
             }
-            if (
-                Constants.hasEggEffect.test(this) &&
-                    !GigEntityUtils.inResinEnoughToBeEggmorphed(this)
-
-            ) {
+            if (Constants.hasEggEffect.test(this) && !GigEntityUtils.inResinEnoughToBeEggmorphed(this)) {
                 this.removeEffect(GigStatusEffects.EGGMORPHING);
             }
             if (Constants.isCreativeSpecPlayer.test(this)) {
