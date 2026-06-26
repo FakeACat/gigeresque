@@ -114,8 +114,6 @@ public class SurgeryKitItem extends Item {
     }
 
     private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
-        if (entity.hasCustomName())
-            burster.setCustomName(entity.getCustomName());
         burster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 10), burster);
         burster.moveTo(entity.blockPosition(), entity.getYRot(), entity.getXRot());
     }

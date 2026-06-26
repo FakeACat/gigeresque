@@ -51,8 +51,6 @@ public class SporeStatusEffect extends MobEffect {
     }
 
     private static void setBursterProperties(LivingEntity entity, LivingEntity burster) {
-        if (entity.hasCustomName())
-            burster.setCustomName(entity.getCustomName());
         if (entity instanceof LivingEntity livingEntity) {
             for (var effect : livingEntity.getActiveEffects()) {
                 if (!effect.is(GigStatusEffects.IMPREGNATION))
