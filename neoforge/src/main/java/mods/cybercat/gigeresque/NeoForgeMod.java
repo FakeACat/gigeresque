@@ -76,8 +76,6 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.DraconicTempleBea
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTempleBeastEntity;
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 import mods.cybercat.gigeresque.common.item.GigItems;
-import mods.cybercat.gigeresque.common.worlddata.PandoraData;
-import mods.cybercat.gigeresque.common.worlddata.PandoraEffect;
 
 @Mod(CommonMod.MOD_ID)
 public final class NeoForgeMod {
@@ -127,8 +125,6 @@ public final class NeoForgeMod {
         NeoForgeRegistries.Keys.FLUID_TYPES,
         CommonMod.MOD_ID
     );
-
-    private final PandoraEffect pandoraEffect = new PandoraEffect();
 
     public static final Supplier<FluidType> BLACKFLUID_TYPE = FLUID_TYPES.register(
         "black_fluid_type",
@@ -189,10 +185,12 @@ public final class NeoForgeMod {
         modEventBus.addListener(this::onRegisterEvent);
         ModEntitySpawn.SERIALIZER.register(modEventBus);
         FLUID_TYPES.register(modEventBus);
-        if (CommonMod.config.generalConfigs.enablePandoraEffects) {
-            NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldEndTick);
-            NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onWorldTick);
-        }
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, (LevelTickEvent.Pre e) -> {
+            if (e.getLevel() instanceof ServerLevel l) CommonMod.beforeLevelTick(l);
+        });
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGH, (LevelTickEvent.Post e) -> {
+            if (e.getLevel() instanceof ServerLevel l) CommonMod.afterLevelTick(l);
+        });
         NeoForge.EVENT_BUS.addListener(this::onJoin);
         modEventBus.addListener(this::commonSetup);
     }
@@ -214,7 +212,6 @@ public final class NeoForgeMod {
     public void createEntityAttributes(final EntityAttributeCreationEvent event) {
         // TODO(acats) unify between mod loaders
         event.put(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes().build());
-        // event.put(GigEntities.ROM_ALIEN.get(), RomAlienEntity.createAttributes().build());
         event.put(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes().build());
         event.put(GigEntities.AQUATIC_CHESTBURSTER.get(), AquaticChestbursterEntity.createAttributes().build());
         event.put(GigEntities.CHESTBURSTER.get(), ChestbursterEntity.createAttributes().build());

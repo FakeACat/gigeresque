@@ -67,10 +67,9 @@ public record GigEntityUtils() {
     }
 
     public static boolean isTargetHostable(Entity target) {
-        return target.getType().is(GigTags.CLASSIC_HOSTS) || target.getType()
-            .is(
-                GigTags.AQUATIC_HOSTS
-            ) || target.getType().is(GigTags.RUNNER_HOSTS);
+        return target.getType().is(GigTags.CLASSIC_HOSTS) ||
+            target.getType().is(GigTags.AQUATIC_HOSTS) ||
+            target.getType().is(GigTags.RUNNER_HOSTS);
     }
 
     public static boolean isTargetGooable(Entity target) {
