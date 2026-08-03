@@ -22,6 +22,7 @@ public record CommonMod() {
 
     public static final String MOD_ID = "gigeresque";
 
+    @Deprecated // TODO(acats) remove in favour of the custom Log class
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     public static GigeresqueConfig config;
