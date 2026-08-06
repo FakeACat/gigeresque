@@ -69,8 +69,8 @@ public final class FabricMod implements ModInitializer {
         FabricDefaultAttributeRegistry.register(GigEntities.BAPHOMORPH.get(), BaphomorphEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(GigEntities.HELL_BURSTER.get(), HellbursterEntity.createAttributes());
 
-        ServerTickEvents.END_WORLD_TICK.register(CommonMod::beforeLevelTick);
-        ServerTickEvents.START_WORLD_TICK.register(CommonMod::afterLevelTick);
+        ServerTickEvents.START_WORLD_TICK.register(CommonMod::beforeLevelTick);
+        ServerTickEvents.END_WORLD_TICK.register(CommonMod::afterLevelTick);
 
         AzIdentityRegistry.register(GigItems.TRACKER.get());
         DispenserBehaviors.initialize();

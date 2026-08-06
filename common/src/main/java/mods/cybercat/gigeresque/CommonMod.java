@@ -39,6 +39,7 @@ public record CommonMod() {
         GigParticles.initialize();
     }
 
+    // NOTE(acats) unsure if we need to separate before/after tick
     public static void beforeLevelTick(ServerLevel level) {
         PandoraSpawning.tick(level);
     }

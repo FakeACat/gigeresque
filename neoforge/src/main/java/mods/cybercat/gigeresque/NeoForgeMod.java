@@ -9,7 +9,6 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
@@ -56,6 +55,7 @@ import java.util.function.Supplier;
 import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadOffsetData;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticAlienEntity;
+import mods.cybercat.gigeresque.common.entity.impl.aqua.AquaticChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.AlienEggEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ChestbursterEntity;
 import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
@@ -234,39 +234,18 @@ public final class NeoForgeMod {
         event.put(GigEntities.HELL_BURSTER.get(), HellbursterEntity.createAttributes().build());
     }
 
-    public void onWorldTick(final LevelTickEvent.Pre event) {
-        if (event.getLevel().isClientSide) {
-            return;
-        }
+    public void beforeLevelTick(final LevelTickEvent.Pre event) {
+        if (event.getLevel().isClientSide) return;
 
-        var serverLevel = (ServerLevel) event.getLevel();
-
-        pandoraEffect.tick(serverLevel, serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING), true);
+        var level = (ServerLevel) event.getLevel();
+        CommonMod.beforeLevelTick(level);
     }
 
     public void onWorldEndTick(final LevelTickEvent.Post event) {
-        if (event.getLevel().isClientSide)
-            return;
+        if (event.getLevel().isClientSide) return;
 
-        boolean hasAdvancement = false;
-
-        for (var player : event.getLevel().players()) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                var advancement = serverPlayer.getServer().getAdvancements().get(Constants.modResource("xeno_dungeon"));
-
-                if (advancement != null) {
-
-                    if (serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone()) {
-                        hasAdvancement = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (hasAdvancement) {
-            PandoraData.setIsTriggered(true);
-        }
+        var level = (ServerLevel) event.getLevel();
+        CommonMod.afterLevelTick(level);
     }
 
     private void onJoin(ClientPlayerNetworkEvent.LoggingIn event) {
