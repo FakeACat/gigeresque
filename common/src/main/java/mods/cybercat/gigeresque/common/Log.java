@@ -39,7 +39,7 @@ public class Log {
         log(Level.WARNING, message, args);
     }
 
-    public static void err(String message, Object... args) {
+    public static void error(String message, Object... args) {
         log(Level.ERROR, message, args);
     }
 }

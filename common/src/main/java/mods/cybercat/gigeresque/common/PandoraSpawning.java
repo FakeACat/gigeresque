@@ -5,10 +5,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinBlock;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -72,13 +73,17 @@ public class PandoraSpawning {
         }
         state.ticksSinceLastSpawn = 0;
 
-        var suitablePlayers = new ArrayList<Player>();
+        var suitablePlayers = new ArrayList<ServerPlayer>();
         for (var p : level.players()) {
             if (p.isCreative() || p.isSpectator()) continue;
             // TODO(acats) also remove players in dungeons
             suitablePlayers.add(p);
         }
-        if (suitablePlayers.isEmpty()) return;
+
+        if (suitablePlayers.isEmpty()) {
+            Log.info("skipped pandora spawning - no valid players");
+            return;
+        }
 
         var target = suitablePlayers.get(level.random.nextInt(suitablePlayers.size()));
         var targetLookDirection = target.calculateViewVector(0, target.getYRot());
@@ -87,8 +92,8 @@ public class PandoraSpawning {
         var spawnAreaCentreBlock = BlockPos.containing(spawnAreaCentreOffset.add(target.position()));
 
         var pos = new BlockPos.MutableBlockPos();
-        final int tries = 1000;
-        for (int i = 0; i < tries; i += 1) {
+        final int MAX_TRIES = 1000;
+        for (int tries = 1; tries <= MAX_TRIES; tries += 1) {
             pos.setX(spawnAreaCentreBlock.getX() + level.random.nextInt(SPAWN_AREA_SIDE_LENGTH) - SPAWN_AREA_SIDE_LENGTH / 2);
             pos.setY(spawnAreaCentreBlock.getY() + level.random.nextInt(SPAWN_AREA_SIDE_LENGTH) - SPAWN_AREA_SIDE_LENGTH / 2);
             pos.setZ(spawnAreaCentreBlock.getZ() + level.random.nextInt(SPAWN_AREA_SIDE_LENGTH) - SPAWN_AREA_SIDE_LENGTH / 2);
@@ -96,17 +101,23 @@ public class PandoraSpawning {
             if (spawnSuitability(level, pos) != SpawnSuitability.VALID) continue;
 
             doSpawn(level, pos);
+
+            Simple.giveAdvancement(target, Constants.modResource("firstspawnfromeffect"));
+
             Log.info(
-                "successful pandora spawn at %d, %d, %d (relative to player: %d, %d, %d)",
+                "successful pandora spawn at %d, %d, %d (relative to player: %d, %d, %d), took %d tries",
                 pos.getX(),
                 pos.getY(),
                 pos.getZ(),
                 pos.getX() - target.blockPosition().getX(),
                 pos.getY() - target.blockPosition().getY(),
-                pos.getZ() - target.blockPosition().getZ()
+                pos.getZ() - target.blockPosition().getZ(),
+                tries
             );
-            break;
+            return;
         }
+
+        Log.info("skipped pandora spawning - no suitable location found after %d tries", MAX_TRIES);
     }
 
     public enum SpawnSuitability { INVALID, NO_SURFACE, VALID }
@@ -211,11 +222,10 @@ public class PandoraSpawning {
             // since positions are added in order from the centre, this is reliable
             var distanceNormalised = (float) i / positions.size();
 
-            // placeholder
-            placeResin: {
-                if (!level.getBlockState(pos).canBeReplaced()) break placeResin;
-
+            // TODO(acats) we should have one unified way to place resin
+            if (level.getBlockState(pos).canBeReplaced()) {
                 final int MAX_LAYERS = 3;
+
                 var layers = MAX_LAYERS - (int) (distanceNormalised * MAX_LAYERS) + 1;
                 if (layers > MAX_LAYERS) layers = MAX_LAYERS;
 
