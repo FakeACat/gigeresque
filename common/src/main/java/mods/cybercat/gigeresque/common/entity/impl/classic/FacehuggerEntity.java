@@ -131,7 +131,7 @@ public class FacehuggerEntity extends AlienEntity {
         entity.setSpeed(0.0f);
         if (CommonMod.config.entityConfigs.facehuggerConfigs.facehuggerGivesBlindness)
             entity.addEffect(
-                new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.getFacehuggerAttachTickTimer(), 0)
+                new MobEffectInstance(MobEffects.BLINDNESS, (int) CommonMod.config.getFacehuggerAttachTickTimer(), 0, false, false)
             );
         if (entity instanceof ServerPlayer player && (!player.isCreative() || !player.isSpectator()))
             player.connection.send(new ClientboundSetPassengersPacket(entity));
