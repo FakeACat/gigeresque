@@ -43,16 +43,17 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
 
         entity.makeStuckInBlock(state, STUCK_SPEED_MULTIPLIER);
 
-        if (
-            (living.tickCount % 20 != 0) ||
-                !GigEntityUtils.inResinEnoughToBeEggmorphed(entity) ||
-                (level.getEntitiesOfClass(AlienEggEntity.class, living.getBoundingBox().inflate(3)).size() != 0)
-        ) return;
-
-        if ((entity instanceof GigPlayer p) && (p.ticksInResin() < TICKS_UNTIL_PLAYER_STARTS_GETTING_EGGMORPHED)) {
+        if (entity instanceof GigPlayer p && p.ticksInResin() < TICKS_UNTIL_PLAYER_STARTS_GETTING_EGGMORPHED) {
             p.setTicksInResin(p.ticksInResin() + 1);
             return;
         }
+
+        if (living.tickCount % 20 != 0) return;
+
+        if (
+            !GigEntityUtils.inResinEnoughToBeEggmorphed(entity) ||
+                level.getEntitiesOfClass(AlienEggEntity.class, living.getBoundingBox().inflate(3)).size() != 0
+        ) return;
 
         if (living.hasEffect(GigStatusEffects.IMPREGNATION) || living.hasEffect(GigStatusEffects.EGGMORPHING)) return;
 
