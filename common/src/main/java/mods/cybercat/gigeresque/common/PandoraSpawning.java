@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.NestResinBlock;
@@ -65,7 +66,10 @@ public class PandoraSpawning {
 
     public static void tick(ServerLevel level) {
         var state = State.get(level);
-        if (!state.enabled || level.getDifficulty() == Difficulty.PEACEFUL) return;
+        if (
+            !state.enabled ||
+                (level.getDifficulty() == Difficulty.PEACEFUL && CommonMod.config.generalConfigs.enablePeacefulModeRemoval)
+        ) return;
 
         if (state.ticksSinceLastSpawn < TICKS_BETWEEN_SPAWNS) {
             state.ticksSinceLastSpawn += 1;
