@@ -448,7 +448,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             CommonMod.config.entityConfigs.hellmorph_runnerConfigs.hellmorph_runnerHealOverTimeIntervalSeconds
         );
         public static final Type HAMMERPEDE = new Type(
-            CommonMod.config.entityConfigs.gooMutantBloodType,
+            BloodType.GOO,
             1,
             false,
             false,
@@ -460,7 +460,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             CommonMod.config.entityConfigs.hammerpedeConfigs.hammerpedeHealOverTimeIntervalSeconds
         );
         public static final Type POPPER = new Type(
-            CommonMod.config.entityConfigs.gooMutantBloodType,
+            BloodType.GOO,
             1,
             false,
             false,
@@ -472,7 +472,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             CommonMod.config.entityConfigs.popperConfigs.popperHealOverTimeIntervalSeconds
         );
         public static final Type STALKER = new Type(
-            CommonMod.config.entityConfigs.gooMutantBloodType,
+            BloodType.GOO,
             3,
             true,
             false,
@@ -484,7 +484,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             CommonMod.config.entityConfigs.stalkerConfigs.stalkerHealOverTimeIntervalSeconds
         );
         public static final Type NEOBURSTER = new Type(
-            CommonMod.config.entityConfigs.neomorphBloodType,
+            BloodType.GOO,
             1,
             false,
             false,
@@ -499,7 +499,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             CommonMod.config.entityConfigs.neobursterConfigs.neobursterHealOverTimeIntervalSeconds
         );
         public static final Type NEOMORPH_ADOLESCENT = new Type(
-            CommonMod.config.entityConfigs.neomorphBloodType,
+            BloodType.GOO,
             1,
             false,
             false,
@@ -514,7 +514,7 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
             CommonMod.config.entityConfigs.neomorph_adolescentConfigs.neomorph_adolescentHealOverTimeIntervalSeconds
         );
         public static final Type NEOMORPH = new Type(
-            CommonMod.config.entityConfigs.neomorphBloodType,
+            BloodType.GOO,
             3,
             false,
             false,
