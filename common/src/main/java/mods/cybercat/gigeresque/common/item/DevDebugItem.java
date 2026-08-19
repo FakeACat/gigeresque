@@ -16,12 +16,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import mods.cybercat.gigeresque.common.Log;
 import mods.cybercat.gigeresque.common.PandoraSpawning;
 import mods.cybercat.gigeresque.common.entity.AlienEntity;
 
 public class DevDebugItem extends Item {
 
-    private enum Mode { TOGGLE_ALIEN_STASIS, TRY_TRIGGER_PANDORA_SPAWNING }
+    private enum Mode { TOGGLE_ALIEN_STASIS, TRY_TRIGGER_PANDORA_SPAWNING, PRINT_PANDY_INFO }
     private Mode mode = Mode.TOGGLE_ALIEN_STASIS;
 
     public DevDebugItem() {
@@ -43,11 +44,17 @@ public class DevDebugItem extends Item {
             return InteractionResultHolder.success(player.getItemInHand(usedHand));
         }
 
-        if (mode == Mode.TRY_TRIGGER_PANDORA_SPAWNING) {
-            var state = PandoraSpawning.State.get(serverLevel);
-            state.enabled = true;
-            state.ticksSinceLastSpawn = PandoraSpawning.TICKS_BETWEEN_SPAWNS;
-            return InteractionResultHolder.success(player.getItemInHand(usedHand));
+        switch (mode) {
+            case Mode.TRY_TRIGGER_PANDORA_SPAWNING -> {
+                var state = PandoraSpawning.State.get(serverLevel);
+                state.enabled = true;
+                state.ticksSinceLastSpawn = PandoraSpawning.TICKS_BETWEEN_SPAWNS;
+                return InteractionResultHolder.success(player.getItemInHand(usedHand));
+            }
+            case Mode.PRINT_PANDY_INFO -> {
+                var state = PandoraSpawning.State.get(serverLevel);
+                Log.info("enabled: %b, timer: %d", state.enabled, state.ticksSinceLastSpawn);
+            }
         }
 
         return super.use(level, player, usedHand);

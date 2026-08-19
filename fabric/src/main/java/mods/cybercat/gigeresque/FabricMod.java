@@ -6,7 +6,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 
 import mods.cybercat.gigeresque.client.FabricHeadOffsetReloadListener;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -37,9 +42,25 @@ import mods.cybercat.gigeresque.common.util.DispenserBehaviors;
 
 public final class FabricMod implements ModInitializer {
 
+    @SuppressWarnings("unchecked")
+    private static <T extends Entity> void register(GigEntities.Entry<T> e) {
+        e.type = Registry.register(BuiltInRegistries.ENTITY_TYPE, e.id, e.builder.build());
+
+        if (e.attributes != null) {
+            FabricDefaultAttributeRegistry.register((EntityType<? extends LivingEntity>) e.type, e.attributes.get());
+        }
+
+        // probably unnecessary but we don't need these anymore so maybe this lets the garbage collector get them?
+        e.builder = null;
+        e.attributes = null;
+    }
+
     @Override
     public void onInitialize() {
         CommonMod.initRegistries();
+
+        for (var e : GigEntities.ALL) register(e);
+
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new FabricHeadOffsetReloadListener());
         FlammableBlockRegistry.getDefaultInstance().add(GigTags.NEST_BLOCKS, 5, 5);
         MobSpawn.initialize();

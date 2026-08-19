@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Items;
 
 import mods.cybercat.gigeresque.client.FluidRenderHandlers;
@@ -50,6 +51,7 @@ import mods.cybercat.gigeresque.client.entity.texture.BlockModels;
 import mods.cybercat.gigeresque.client.entity.texture.BlockTextures;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.client.particle.*;
+import mods.cybercat.gigeresque.common.ClientMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.animators.*;
 import mods.cybercat.gigeresque.common.block.entity.*;
@@ -59,8 +61,13 @@ import mods.cybercat.gigeresque.common.predicates.*;
 
 public class FabricModClient implements ClientModInitializer {
 
+    private static <T extends Entity> void register(ClientMod.RendererEntry<T> r) {
+        EntityRenderers.register(r.associatedType, r.constructor);
+    }
+
     @Override
     public void onInitializeClient() {
+        ClientMod.init();
         FluidRenderHandlers.initialize();
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.NEST_RESIN_WEB.get(), RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(GigBlocks.NEST_RESIN_WEB_CROSS.get(), RenderType.translucent());
@@ -69,6 +76,9 @@ public class FabricModClient implements ClientModInitializer {
         registerParticle(GigParticles.GOO.get(), GooParticleFactory::new);
         registerParticle(GigParticles.BLOOD.get(), BloodParticleFactory::new);
         registerParticle(GigParticles.MIST.get(), MistParticleFactory::new);
+
+        for (var r : ClientMod.RENDERERS) register(r);
+
         EntityRenderers.register(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         EntityRenderers.register(GigEntities.ACID.get(), AcidEntityRender::new);
         EntityRenderers.register(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);

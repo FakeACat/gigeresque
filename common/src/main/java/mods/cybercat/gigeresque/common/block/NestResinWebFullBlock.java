@@ -52,7 +52,7 @@ public class NestResinWebFullBlock extends AbstractNestBlock {
 
         if (
             !GigEntityUtils.inResinEnoughToBeEggmorphed(entity) ||
-                level.getEntitiesOfClass(AlienEggEntity.class, living.getBoundingBox().inflate(3)).size() != 0
+                !level.getEntitiesOfClass(AlienEggEntity.class, living.getBoundingBox().inflate(3)).isEmpty()
         ) return;
 
         if (living.hasEffect(GigStatusEffects.IMPREGNATION) || living.hasEffect(GigStatusEffects.EGGMORPHING)) return;

@@ -41,6 +41,7 @@ import mods.cybercat.gigeresque.platform.GigServices;
  * The {@link EntityType EntityType} class represents an entity type in the game.
  * </p>
  */
+@Deprecated
 public interface CommonEntityRegistryInterface {
 
     /**

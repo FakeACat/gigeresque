@@ -12,10 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -50,6 +47,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import mods.cybercat.gigeresque.client.entity.render.helper.EntityHeadOffsetData;
@@ -168,11 +166,37 @@ public final class NeoForgeMod {
         }
     );
 
+    private static class NeoForgeEntityType<T extends Entity> {
+        Supplier<EntityType<T>> type;
+        GigEntities.Entry<T> common;
+    }
+
+    private static final ArrayList<NeoForgeEntityType<?>> ALL_ENTITY_TYPES = new ArrayList<>();
+
+    private static <T extends Entity> void register(GigEntities.Entry<T> commonEntry) {
+        var e = new NeoForgeEntityType<T>();
+        ALL_ENTITY_TYPES.add(e);
+        e.type = entityTypeDeferredRegister.register(commonEntry.id.getPath(), () -> commonEntry.builder.build(commonEntry.id.toString()));
+        e.common = commonEntry;
+    }
+
+    private static <T extends Entity> void setCommonEntryType(NeoForgeEntityType<T> e) {
+        e.common.type = e.type.get();
+        assert e.common.type != null;
+    }
+
+    public static void ensureAllEntityTypesSetUpNow() {
+        for (var e : ALL_ENTITY_TYPES) setCommonEntryType(e);
+    }
+
     public NeoForgeMod(IEventBus modEventBus) {
         CommonMod.initRegistries();
+
+        for (var e : GigEntities.ALL) register(e);
+        NeoForgeMod.entityTypeDeferredRegister.register(modEventBus);
+
         NeoForgeMod.blockEntityTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.blockDeferredRegister.register(modEventBus);
-        NeoForgeMod.entityTypeDeferredRegister.register(modEventBus);
         NeoForgeMod.itemDeferredRegister.register(modEventBus);
         NeoForgeMod.soundEventDeferredRegister.register(modEventBus);
         NeoForgeMod.structureTypeDeferredRegister.register(modEventBus);
@@ -209,7 +233,16 @@ public final class NeoForgeMod {
         );
     }
 
+    @SuppressWarnings("unchecked")
     public void createEntityAttributes(final EntityAttributeCreationEvent event) {
+        ensureAllEntityTypesSetUpNow();
+
+        for (var neoforgeEntityType : ALL_ENTITY_TYPES) {
+            var e = neoforgeEntityType.common;
+            event.put((EntityType<? extends LivingEntity>) e.type, e.attributes.get().build());
+            e.attributes = null;
+        }
+
         // TODO(acats) unify between mod loaders
         event.put(GigEntities.ALIEN.get(), ClassicAlienEntity.createAttributes().build());
         event.put(GigEntities.AQUATIC_ALIEN.get(), AquaticAlienEntity.createAttributes().build());

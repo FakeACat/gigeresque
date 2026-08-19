@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -49,6 +50,7 @@ import mods.cybercat.gigeresque.client.entity.texture.BlockModels;
 import mods.cybercat.gigeresque.client.entity.texture.BlockTextures;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.client.particle.*;
+import mods.cybercat.gigeresque.common.ClientMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.animators.*;
 import mods.cybercat.gigeresque.common.block.entity.*;
@@ -73,8 +75,16 @@ public class NeoForgeClientMod {
         AzItemRendererRegistry.register(TrackerItemRenderer::new, GigItems.TRACKER.get());
     }
 
+    private static <T extends Entity> void register(ClientMod.RendererEntry<T> r, EntityRenderersEvent.RegisterRenderers e) {
+        e.registerEntityRenderer(r.associatedType, r.constructor);
+    }
+
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        ClientMod.init();
+        NeoForgeMod.ensureAllEntityTypesSetUpNow();
+        for (var r : ClientMod.RENDERERS) register(r, event);
+
         event.registerEntityRenderer(GigEntities.ENGINEER_HOLOGRAM.get(), HologramEntityRender::new);
         event.registerEntityRenderer(GigEntities.ACID.get(), AcidEntityRender::new);
         event.registerEntityRenderer(GigEntities.ACID_PROJECTILE.get(), ThrownItemRenderer::new);

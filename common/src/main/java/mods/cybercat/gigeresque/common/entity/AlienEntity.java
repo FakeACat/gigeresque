@@ -79,6 +79,7 @@ import mods.cybercat.gigeresque.common.util.DamageSourceUtils;
 import mods.cybercat.gigeresque.interfacing.AbstractAlien;
 import mods.cybercat.gigeresque.interfacing.AnimationSelector;
 
+@Deprecated // moving to Alien.java
 public abstract class AlienEntity extends Monster implements VibrationSystem, AbstractAlien {
 
     public static final EntityDataAccessor<BlockPos> HOME_BLOCKPOS = SynchedEntityData.defineId(

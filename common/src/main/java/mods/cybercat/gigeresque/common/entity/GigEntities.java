@@ -1,13 +1,17 @@
 package mods.cybercat.gigeresque.common.entity;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import mods.cybercat.gigeresque.CommonMod;
+import mods.cybercat.gigeresque.Constants;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.entity.*;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.entity.*;
@@ -40,6 +44,25 @@ import mods.cybercat.gigeresque.common.entity.impl.templebeast.MoonlightHorrorTe
 import mods.cybercat.gigeresque.common.entity.impl.templebeast.RavenousTempleBeastEntity;
 
 public record GigEntities() implements CommonEntityRegistryInterface, CommonBlockEntityRegistryInterface {
+
+    public static class Entry<T extends Entity> {
+        public EntityType<T> type;
+        public ResourceLocation id;
+
+        public EntityType.Builder<T> builder;
+        public Supplier<AttributeSupplier.Builder> attributes;
+    }
+
+    public static final ArrayList<Entry<?>> ALL = new ArrayList<>();
+
+    public static final Entry<Alien> ENTOMBED_INTERLOPER = new Entry<>();
+
+    public static void initialize() {
+        ALL.add(ENTOMBED_INTERLOPER);
+        ENTOMBED_INTERLOPER.id = Constants.modResource("alien_new");
+        ENTOMBED_INTERLOPER.builder = EntityType.Builder.of(Alien::new, MobCategory.MONSTER).sized(0.9f, 1.9f);
+        ENTOMBED_INTERLOPER.attributes = ClassicAlienEntity::createAttributes;
+    }
 
     public static final Supplier<EntityType<ClassicAlienEntity>> ALIEN = CommonEntityRegistryInterface.registerEntity(
         CommonMod.MOD_ID,
@@ -438,5 +461,4 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
             ).build(null)
         );
 
-    public static void initialize() {}
 }
