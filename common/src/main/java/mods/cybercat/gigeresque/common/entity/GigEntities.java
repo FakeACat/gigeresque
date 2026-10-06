@@ -60,7 +60,7 @@ public record GigEntities() implements CommonEntityRegistryInterface, CommonBloc
     public static void initialize() {
         ALL.add(ENTOMBED_INTERLOPER);
         ENTOMBED_INTERLOPER.id = Constants.modResource("alien_new");
-        ENTOMBED_INTERLOPER.builder = EntityType.Builder.of(Alien::new, MobCategory.MONSTER).sized(0.9f, 1.9f);
+        ENTOMBED_INTERLOPER.builder = EntityType.Builder.of(Alien::new, MobCategory.MONSTER).sized(0.75f, 0.75f);
         ENTOMBED_INTERLOPER.attributes = ClassicAlienEntity::createAttributes;
     }
 

@@ -1,5 +1,6 @@
 package mods.cybercat.gigeresque.common.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,10 +28,13 @@ import mods.cybercat.gigeresque.common.Simple;
 public final class Alien extends Monster {
     public final Pathfinder pathfinder = new Pathfinder();
 
-    public enum Movement { STANDING, RUNNING, CLIMBING }
+    public enum Movement {
+        RUNNING,
+        CLIMBING,
+    }
 
     @Sync
-    public Movement movement = Movement.STANDING;
+    public Movement movement = Movement.RUNNING;
 
     @Sync
     public final Vector3f forward = new Vector3f();
@@ -40,15 +44,21 @@ public final class Alien extends Monster {
     @Sync
     public float verticalOffset;
 
+    public BlockPos currentPathfindingTarget;
+
     public Alien(EntityType<Alien> type, Level level) {
         super(type, level);
 
-        pathfinder.standingWidth = getBbWidth();
-        pathfinder.standingHeight = getBbHeight();
+        if (level instanceof ServerLevel serverLevel) {
+            pathfinder.level = serverLevel;
 
-        pathfinder.canClimb = true;
-        pathfinder.climbingWidth = 0.8f;
-        pathfinder.climbingHeight = 0.8f;
+            pathfinder.standingWidth = getBbWidth();
+            pathfinder.standingHeight = getBbHeight();
+
+            pathfinder.canClimb = true;
+            pathfinder.climbingWidth = 0.8f;
+            pathfinder.climbingHeight = 0.8f;
+        }
     }
 
     @Override
@@ -60,95 +70,155 @@ public final class Alien extends Monster {
             return;
         }
 
-        var level = (ServerLevel) level();
+        assert pathfinder.level == level();
 
-        followPlayer: {
-            movement = Movement.STANDING;
-            setNoGravity(false);
+        var player = level().getNearestPlayer(this, 100);
+        if (player != null) navigateTo(player.blockPosition());
 
-            var player = level().getNearestPlayer(this, 100);
-            if (player == null) break followPlayer;
+        // decide how we should be moving right now
+        {
+            var currentNavigation = pathfinder.pickNavigationTypeAt(getBlockX(), getBlockY(), getBlockZ());
+            var nextNavigation = !pathfinder.path.isEmpty() && pathfinder.status == Pathfinder.Status.DONE
+                ? pathfinder.path.peek().navigation
+                : currentNavigation;
 
-            pathfinder.level = level;
-            pathfinder.distanceFunction = (x, y, z) -> (int) Math.sqrt(player.position().distanceToSqr(x + .5, y + .5, z + .5));
-
-            pathfinder.workOnPath(getBlockX(), getBlockY(), getBlockZ());
-
-            if (pathfinder.status != Pathfinder.Status.DONE || pathfinder.path.isEmpty()) break followPlayer;
-
-            var nextNode = pathfinder.path.peek();
-
-            if (pathfinder.pickNavigationTypeAt(nextNode.x, nextNode.y, nextNode.z) != nextNode.navigation) {
-                pathfinder.status = Pathfinder.Status.FAILED;
-            }
-
-            if (CommonMod.config.generalConfigs.enableDevparticles) for (var node : pathfinder.path) {
-                level.sendParticles(ParticleTypes.BUBBLE, node.x + 0.5, node.y + 0.5, node.z + 0.5, 1, 0, 0, 0, 0);
-            }
-
-            switch (nextNode.navigation) {
-                case NOT_NAVIGABLE -> Log.error("non-navigable node found in path");
+            switch (currentNavigation) {
+                case NOT_NAVIGABLE -> movement = Movement.RUNNING;
                 case WALKABLE -> {
-                    movement = Movement.RUNNING;
-
-                    var nodePosition = new Vec3(nextNode.x + .5, nextNode.y, nextNode.z + .5);
-                    var distanceSquaredToNextNode = distanceToSqr(nodePosition);
-
-                    if (distanceSquaredToNextNode > 8) pathfinder.status = Pathfinder.Status.FAILED;
-                    if (distanceSquaredToNextNode < .25) pathfinder.path.pop();
-
-                    var movementAttribute = getAttribute(Attributes.MOVEMENT_SPEED);
-                    assert movementAttribute != null;
-                    var speed = movementAttribute.getValue();
-
-                    var direction = nodePosition.subtract(position()).multiply(1, 0, 1).normalize();
-
-                    forward.set(direction.x, direction.y, direction.z);
-                    up.set(0, 1, 0);
-                    verticalOffset = 0;
-
-                    setDeltaMovement(direction.scale(speed));
-                }
-                case CLIMBABLE -> {
-                    movement = Movement.CLIMBING;
-                    setNoGravity(true);
-
-                    var centre = position().add(0, getBbHeight() / 2, 0);
-                    var nodePosition = new Vec3(nextNode.x + .5, nextNode.y + .5, nextNode.z + .5);
-                    var distanceSquaredToNextNode = centre.distanceToSqr(nodePosition);
-
-                    if (distanceSquaredToNextNode > 8) pathfinder.status = Pathfinder.Status.FAILED;
-                    if (distanceSquaredToNextNode < .25) pathfinder.path.pop();
-
-                    var closestBlockCollision = Simple.closestBlockCollision(level(), centre, pathfinder.climbingReach + 1, 0.2);
-
-                    if (closestBlockCollision == null) {
-                        pathfinder.status = Pathfinder.Status.FAILED;
-                        return;
+                    switch (nextNavigation) {
+                        case NOT_NAVIGABLE -> movement = Movement.RUNNING;
+                        case WALKABLE -> movement = Movement.RUNNING;
+                        case CLIMBABLE -> movement = Movement.CLIMBING;
+                        case null -> {}
                     }
-
-                    var movementAttribute = getAttribute(Attributes.MOVEMENT_SPEED);
-                    assert movementAttribute != null;
-                    var speed = movementAttribute.getValue();
-
-                    var direction = nodePosition.subtract(centre).normalize();
-
-                    forward.set(direction.x, direction.y, direction.z);
-
-                    {
-                        var collisionToCentre = centre.subtract(closestBlockCollision);
-                        verticalOffset = (float) collisionToCentre.length();
-
-                        var collisionToCentreDirection = centre.subtract(closestBlockCollision).normalize();
-                        up.set(collisionToCentreDirection.x, collisionToCentreDirection.y, collisionToCentreDirection.z);
-                    }
-
-                    setDeltaMovement(direction.scale(speed));
                 }
+                case CLIMBABLE -> movement = Movement.CLIMBING;
+                case null -> {}
             }
         }
 
+        // move based on movement mode
+        switch (movement) {
+            case RUNNING -> {
+                setNoGravity(false);
+
+                if (getDeltaMovement().x != 0 || getDeltaMovement().z != 0) {
+                    forward.set(getDeltaMovement().x, 0, getDeltaMovement().z).normalize();
+                }
+
+                up.set(0, 1, 0);
+            }
+            case CLIMBING -> {
+                setNoGravity(true);
+
+                if (getDeltaMovement().lengthSqr() != 0) {
+                    forward.set(getDeltaMovement().x, getDeltaMovement().y, getDeltaMovement().z).normalize();
+                }
+
+                var closestBlockCollision = Simple.closestBlockCollision(
+                    level(),
+                    position().add(0, getBbHeight() / 2, 0),
+                    pathfinder.climbingReach + 1,
+                    0.2
+                );
+                if (closestBlockCollision == null) {
+                    setNoGravity(false);
+                    Log.warn("unable to find closest block while climbing");
+                } else {
+                    var offset = position().subtract(closestBlockCollision);
+                    up.set(offset.x, offset.y, offset.z).normalize();
+
+                    var idealDistanceFromBlocks = (pathfinder.climbingWidth + pathfinder.climbingReach) / 2;
+                    var distanceFromBlocks = offset.length();
+
+                    var pullStrength = 0.1;
+
+                    var distanceFromIdealDistanceFromBlocks = Math.abs(distanceFromBlocks - idealDistanceFromBlocks);
+                    if (distanceFromIdealDistanceFromBlocks < pullStrength) {
+                        pullStrength = distanceFromIdealDistanceFromBlocks;
+                    }
+
+                    if (distanceFromBlocks > idealDistanceFromBlocks) pullStrength *= -1;
+
+                    setDeltaMovement(getDeltaMovement().scale(0.9).add(up.x * pullStrength, up.y * pullStrength, up.z * pullStrength));
+                }
+            }
+            case null -> {}
+        }
+
         serverSync();
+    }
+
+    public void navigateTo(BlockPos exactPos) {
+        var allowedErrorForPathfindingTarget = Math.sqrt(blockPosition().distSqr(exactPos)) / 3;
+        if (currentPathfindingTarget == null || Math.sqrt(exactPos.distSqr(currentPathfindingTarget)) > allowedErrorForPathfindingTarget) {
+            currentPathfindingTarget = exactPos;
+            pathfinder.status = Pathfinder.Status.FAILED;
+        }
+
+        var level = (ServerLevel) level();
+        pathfinder.distanceFunction = (x, y, z) -> (int) Math.sqrt(currentPathfindingTarget.distToCenterSqr(x + .5, y + .5, z + .5));
+
+        pathfinder.workOnPath(getBlockX(), getBlockY(), getBlockZ());
+
+        completePathIfExactPosAlreadyClosed: if (pathfinder.status == Pathfinder.Status.RUNNING) {
+            var possibleNodeAtExactPos = pathfinder.closedNodes.get(Simple.hash(exactPos.getX(), exactPos.getY(), exactPos.getZ()));
+            if (possibleNodeAtExactPos == null) break completePathIfExactPosAlreadyClosed;
+            pathfinder.finishAt(possibleNodeAtExactPos);
+        }
+
+        if (pathfinder.status != Pathfinder.Status.DONE || pathfinder.path.isEmpty()) return;
+
+        var nextNode = pathfinder.path.peek();
+
+        if (pathfinder.pickNavigationTypeAt(nextNode.x, nextNode.y, nextNode.z) != nextNode.navigation) {
+            pathfinder.status = Pathfinder.Status.FAILED;
+        }
+
+        if (CommonMod.config.generalConfigs.enableDevparticles) for (var node : pathfinder.path) {
+            level.sendParticles(ParticleTypes.BUBBLE, node.x + 0.5, node.y + 0.5, node.z + 0.5, 1, 0, 0, 0, 0);
+        }
+
+        switch (movement) {
+            case RUNNING -> {
+                var nodePosition = new Vec3(nextNode.x + .5, nextNode.y, nextNode.z + .5);
+                var distanceSquaredToNextNode = distanceToSqr(nodePosition);
+
+                if (distanceSquaredToNextNode > 8) pathfinder.status = Pathfinder.Status.FAILED;
+                if (distanceSquaredToNextNode < .25) pathfinder.path.pop();
+
+                var movementAttribute = getAttribute(Attributes.MOVEMENT_SPEED);
+                assert movementAttribute != null;
+                var speed = movementAttribute.getValue();
+
+                var direction = nodePosition.subtract(position()).multiply(1, 0, 1).normalize();
+                var directionScaled = direction.scale(speed);
+                setDeltaMovement(directionScaled.x, getDeltaMovement().y, directionScaled.z);
+            }
+            case CLIMBING -> {
+                var centre = position().add(0, getBbHeight() / 2, 0);
+                var nodePosition = new Vec3(nextNode.x + .5, nextNode.y + .5, nextNode.z + .5);
+                var distanceSquaredToNextNode = centre.distanceToSqr(nodePosition);
+
+                if (distanceSquaredToNextNode > 8) pathfinder.status = Pathfinder.Status.FAILED;
+                if (distanceSquaredToNextNode < .25) pathfinder.path.pop();
+
+                var closestBlockCollision = Simple.closestBlockCollision(level(), centre, pathfinder.climbingReach + 1, 0.2);
+
+                if (closestBlockCollision == null) {
+                    pathfinder.status = Pathfinder.Status.FAILED;
+                    return;
+                }
+
+                var movementAttribute = getAttribute(Attributes.MOVEMENT_SPEED);
+                assert movementAttribute != null;
+                var speed = movementAttribute.getValue();
+
+                var direction = nodePosition.subtract(centre).normalize();
+                setDeltaMovement(direction.scale(speed));
+            }
+            case null -> {}
+        }
     }
 
     @SuppressWarnings("unchecked")

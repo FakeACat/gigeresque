@@ -48,10 +48,8 @@ public class AlienRenderer extends AzEntityRenderer<Alien> {
 
     public static void animate(Alien alien) {
         switch (alien.movement) {
-            case STANDING -> IDLE_LAND.sendForEntity(alien);
             case RUNNING -> RUN.sendForEntity(alien);
             case CLIMBING -> CRAWL.sendForEntity(alien);
-            case null -> throw new AssertionError();
         }
     }
 

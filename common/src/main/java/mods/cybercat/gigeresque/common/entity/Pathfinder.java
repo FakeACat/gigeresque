@@ -109,15 +109,7 @@ public class Pathfinder {
             }
 
             if (best.approxDistanceFromTarget10x == 0) {
-                Log.info("pathfinding succeeded!!");
-                status = Status.DONE;
-
-                var node = best;
-                while (node != null) {
-                    path.addFirst(node);
-                    node = node.previous;
-                }
-
+                finishAt(best);
                 return;
             }
 
@@ -149,6 +141,18 @@ public class Pathfinder {
             if (ny != null && nz != null) addOrUpdateNodeAt(best.x, best.y - 1, best.z - 1, best);
 
             steps += 1;
+        }
+    }
+
+    public void finishAt(Node destination) {
+        assert path.isEmpty();
+        Log.info("pathfinding succeeded!!");
+        status = Status.DONE;
+
+        var node = destination;
+        while (node != null) {
+            path.addFirst(node);
+            node = node.previous;
         }
     }
 
