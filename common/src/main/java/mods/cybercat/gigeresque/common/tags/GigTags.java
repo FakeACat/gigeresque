@@ -5,7 +5,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -145,11 +144,6 @@ public record GigTags() {
         Registries.ENTITY_TYPE,
         Constants.modResource("gig_villagers_fear")
     );
-
-    /* SPAWN BIOMES */
-    public static final TagKey<Biome> EGGSPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("eggbiomes"));
-
-    public static final TagKey<Biome> AQUASPAWN_BIOMES = TagKey.create(Registries.BIOME, Constants.modResource("aquabiomes"));
 
     /* GAMEEVENT TAGS */
     public static final TagKey<GameEvent> ALIEN_CAN_LISTEN = TagKey.create(
