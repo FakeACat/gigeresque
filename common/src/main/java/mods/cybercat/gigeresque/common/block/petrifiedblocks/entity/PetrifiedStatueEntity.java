@@ -1,11 +1,13 @@
 package mods.cybercat.gigeresque.common.block.petrifiedblocks.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedStatueBlock;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
@@ -20,6 +22,19 @@ public class PetrifiedStatueEntity extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, PetrifiedStatueEntity blockEntity) {
+        if (CommonMod.config.generalConfigs.enableDevparticles && level.isClientSide && state.getValue(PetrifiedStatueBlock.UNSAFE)) {
+            level.addParticle(
+                ParticleTypes.FLAME,
+                true,
+                pos.getX() + level.random.nextFloat(),
+                pos.getY() + level.random.nextFloat(),
+                pos.getZ() + level.random.nextFloat(),
+                0,
+                0,
+                0
+            );
+        }
+
         if (blockEntity.level != null) {
             if (!blockEntity.level.isClientSide)
                 BlockPos.betweenClosed(pos, pos.relative(state.getValue(PetrifiedStatueBlock.FACING), 1).above(2))

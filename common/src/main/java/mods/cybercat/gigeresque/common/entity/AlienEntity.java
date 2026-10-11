@@ -1154,11 +1154,11 @@ public abstract class AlienEntity extends Monster implements VibrationSystem, Ab
                 swing(InteractionHand.MAIN_HAND);
                 if (item.has(DataComponents.FOOD)) {
                     var foodComponent = item.get(DataComponents.FOOD);
-                    setGrowthTimeTicks(growthTimeTicks() + foodComponent.nutrition() * 400);
+                    setGrowthTimeTicks(growthTimeTicks() + foodComponent.nutrition() * 20 * 6);
                     item.finishUsingItem(level(), this);
                     item.shrink(1);
                 } else {
-                    setGrowthTimeTicks(growthTimeTicks() + 400);
+                    setGrowthTimeTicks(growthTimeTicks() + 20 * 20);
                     if (item.is(GigTags.POTIONS)) {
                         item.finishUsingItem(level(), this);
                     }

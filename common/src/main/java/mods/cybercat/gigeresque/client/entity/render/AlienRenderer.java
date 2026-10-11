@@ -67,8 +67,16 @@ public class AlienRenderer extends AzEntityRenderer<Alien> {
             float partialTick,
             float nativeScale
         ) {
-            var forward = new Vec3(alien.forward).scale(-1);
-            var up = new Vec3(alien.up);
+            var forward = new Vec3(
+                alien.forward.x * partialTick + alien.clientPreviousForward.x * (1 - partialTick),
+                alien.forward.y * partialTick + alien.clientPreviousForward.y * (1 - partialTick),
+                alien.forward.z * partialTick + alien.clientPreviousForward.z * (1 - partialTick)
+            ).scale(-1);
+            var up = new Vec3(
+                alien.up.x * partialTick + alien.clientPreviousUp.x * (1 - partialTick),
+                alien.up.y * partialTick + alien.clientPreviousUp.y * (1 - partialTick),
+                alien.up.z * partialTick + alien.clientPreviousUp.z * (1 - partialTick)
+            );
             poseStack.rotateAround(Simple.quaternionFromDirection(forward, up), 0, alien.getBbHeight() / 2.0f, 0);
             poseStack.translate(0, alien.verticalOffset, 0);
         }

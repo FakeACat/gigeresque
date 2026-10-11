@@ -57,6 +57,18 @@ public class StasisManager {
             entity.goalSelector.disableControlFlag(Goal.Flag.LOOK);
             entity.goalSelector.disableControlFlag(Goal.Flag.MOVE);
             entity.goalSelector.disableControlFlag(Goal.Flag.TARGET);
+
+            // face closest cardinal direction
+            entity.yBodyRot = ((entity.yBodyRot % 360) + 360) % 360;
+            if (entity.yBodyRot < 45 || entity.yBodyRot > 315) {
+                entity.yBodyRot = 0;
+            } else if (entity.yBodyRot < 135) {
+                entity.yBodyRot = 90;
+            } else if (entity.yBodyRot < 225) {
+                entity.yBodyRot = 180;
+            } else {
+                entity.yBodyRot = 270;
+            }
         }
     }
 

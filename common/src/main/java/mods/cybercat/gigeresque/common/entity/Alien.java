@@ -36,13 +36,19 @@ public final class Alien extends Monster {
     @Sync
     public Movement movement = Movement.RUNNING;
 
+    public static final float ROTATION_SMOOTHING = .8f;
+
     @Sync
     public final Vector3f forward = new Vector3f();
+    public final Vector3f clientPreviousForward = new Vector3f();
+
     @Sync
     public final Vector3f up = new Vector3f();
+    public final Vector3f clientPreviousUp = new Vector3f();
 
     @Sync
     public float verticalOffset;
+    public float clientPreviousVerticalOffset;
 
     public BlockPos currentPathfindingTarget;
 
@@ -66,7 +72,17 @@ public final class Alien extends Monster {
         super.tick();
 
         if (level().isClientSide) {
+            clientPreviousForward.set(forward);
+            clientPreviousUp.set(up);
+            clientPreviousVerticalOffset = verticalOffset;
+
             clientSync();
+
+            forward.mul(ROTATION_SMOOTHING).add(new Vector3f(clientPreviousForward).mul(1 - ROTATION_SMOOTHING));
+            up.mul(ROTATION_SMOOTHING).add(new Vector3f(clientPreviousUp).mul(1 - ROTATION_SMOOTHING));
+
+            verticalOffset *= ROTATION_SMOOTHING;
+            verticalOffset += clientPreviousVerticalOffset * (1 - ROTATION_SMOOTHING);
             return;
         }
 
