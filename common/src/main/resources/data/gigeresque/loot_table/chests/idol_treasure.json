@@ -2,102 +2,88 @@
 	"type": "minecraft:chest",
 	"pools": [
 		{
-			"bonus_rolls": 0.0,
+			"bonus_rolls": 2,
 			"rolls": {
 				"type": "minecraft:uniform",
-				"min": 6.0,
-				"max": 9.0
+				"min": 5,
+				"max": 7
 			},
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"weight": 8,
-					"name": "minecraft:suspicious_stew",
+					"weight": 25,
+					"name": "minecraft:slime_ball",
 					"functions": [
 						{
-							"function": "minecraft:set_components",
-							"components": {
-								"minecraft:food": {
-									"nutrition": 0,
-									"saturation": 0,
-									"effects": [
-										{
-											"effect": {
-												"id": "minecraft:night_vision",
-												"duration": 200
-											},
-											"probability": 0.2
-										},
-										{
-											"effect": {
-												"id": "minecraft:poison",
-												"duration": 200
-											},
-											"probability": 0.2
-										},
-										{
-											"effect": {
-												"id": "minecraft:regeneration",
-												"duration": 200
-											},
-											"probability": 0.2
-										},
-										{
-											"effect": {
-												"id": "minecraft:wither",
-												"duration": 200
-											},
-											"probability": 0.8
-										}
-									]
-								}
-							}
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 5
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 12,
+					"name": "minecraft:fire_charge",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 3,
+								"max": 7
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 12,
+					"name": "minecraft:ender_pearl",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 5
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 11,
+					"name": "minecraft:white_wool",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 8
+							},
+							"add": false
 						}
 					]
 				},
 				{
 					"type": "minecraft:item",
 					"weight": 10,
-					"name": "minecraft:gold_ingot",
+					"name": "minecraft:shroomlight",
 					"functions": [
 						{
 							"function": "minecraft:set_count",
 							"count": {
 								"type": "minecraft:uniform",
-								"min": 2.0,
-								"max": 5.0
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 7,
-					"name": "minecraft:diamond",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 1.0,
-								"max": 2.0
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 6,
-					"name": "minecraft:emerald",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 1.0,
-								"max": 3.0
+								"min": 1,
+								"max": 6
 							},
 							"add": false
 						}
@@ -106,19 +92,14 @@
 				{
 					"type": "minecraft:item",
 					"weight": 3,
-					"name": "minecraft:enchanted_golden_apple"
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 10,
-					"name": "minecraft:glow_berries",
+					"name": "minecraft:ink_sac",
 					"functions": [
 						{
 							"function": "minecraft:set_count",
 							"count": {
 								"type": "minecraft:uniform",
-								"min": 1.0,
-								"max": 5.0
+								"min": 6,
+								"max": 16
 							},
 							"add": false
 						}
@@ -126,31 +107,15 @@
 				},
 				{
 					"type": "minecraft:item",
-					"weight": 8,
-					"name": "minecraft:potion",
-					"functions": [
-						{
-							"function": "minecraft:set_potion",
-							"id": "minecraft:strong_regeneration"
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 2,
-					"name": "minecraft:netherite_scrap"
-				},
-				{
-					"type": "minecraft:item",
 					"weight": 7,
-					"name": "minecraft:amethyst_shard",
+					"name": "minecraft:cactus",
 					"functions": [
 						{
 							"function": "minecraft:set_count",
 							"count": {
 								"type": "minecraft:uniform",
-								"min": 1.0,
-								"max": 4.0
+								"min": 6,
+								"max": 16
 							},
 							"add": false
 						}
@@ -159,33 +124,305 @@
 				{
 					"type": "minecraft:item",
 					"weight": 5,
-					"name": "minecraft:music_disc_otherside"
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 6,
-					"name": "minecraft:music_disc_13"
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 6,
-					"name": "minecraft:music_disc_cat"
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 10,
-					"name": "minecraft:bone",
+					"name": "minecraft:cocoa_beans",
 					"functions": [
 						{
 							"function": "minecraft:set_count",
 							"count": {
 								"type": "minecraft:uniform",
-								"min": 2.0,
-								"max": 8.0
+								"min": 6,
+								"max": 16
 							},
 							"add": false
 						}
 					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 5,
+					"name": "minecraft:glow_ink_sac",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 3,
+								"max": 8
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 7,
+					"name": "minecraft:suspicious_sand",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 5,
+								"max": 15
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 7,
+					"name": "minecraft:suspicious_gravel",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 5,
+								"max": 15
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:nether_brick",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 10
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 15,
+					"name": "minecraft:glowstone_dust",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 8,
+								"max": 16
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 16,
+					"name": "minecraft:golden_apple",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 2,
+								"max": 5
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:wither_rose"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:amethyst_cluster",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 3
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 10,
+					"name": "minecraft:crying_obsidian",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 6,
+								"max": 10
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 5,
+					"name": "minecraft:enchanted_golden_apple",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 3
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 4,
+					"name": "minecraft:budding_amethyst",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 3
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 2,
+					"name": "minecraft:chorus_fruit",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 3
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 2,
+					"name": "minecraft:phantom_membrane",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 3,
+								"max": 9
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 3,
+					"name": "minecraft:prismarine_crystals",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 5
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 2,
+					"name": "minecraft:infested_stone",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 6
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 2,
+					"name": "minecraft:infested_deepslate",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 6
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 1,
+					"name": "minecraft:netherite_ingot",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 1,
+								"max": 4
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 15,
+					"name": "gigeresque:sealed_ampoule_acid",
+					"functions": [
+						{
+							"function": "minecraft:set_count",
+							"count": {
+								"type": "minecraft:uniform",
+								"min": 4,
+								"max": 8
+							},
+							"add": false
+						}
+					]
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 6,
+					"name": "gigeresque:sealed_ampoule_goo"
+				},
+				{
+					"type": "minecraft:item",
+					"weight": 1,
+					"name": "minecraft:bedrock"
 				}
 			]
 		}
