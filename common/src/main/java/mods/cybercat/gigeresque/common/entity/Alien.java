@@ -14,13 +14,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.Log;
 import mods.cybercat.gigeresque.common.Simple;
@@ -33,20 +26,20 @@ public final class Alien extends Monster {
         CLIMBING,
     }
 
-    @Sync
+    public static final EntityDataAccessor<Integer> MOVEMENT = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.INT);
     public Movement movement = Movement.RUNNING;
 
     public static final float ROTATION_SMOOTHING = .8f;
 
-    @Sync
+    public static final EntityDataAccessor<Vector3f> FORWARD = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.VECTOR3);
     public final Vector3f forward = new Vector3f();
     public final Vector3f clientPreviousForward = new Vector3f();
 
-    @Sync
+    public static final EntityDataAccessor<Vector3f> UP = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.VECTOR3);
     public final Vector3f up = new Vector3f();
     public final Vector3f clientPreviousUp = new Vector3f();
 
-    @Sync
+    public static final EntityDataAccessor<Float> VERTICAL_OFFSET = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.FLOAT);
     public float verticalOffset;
     public float clientPreviousVerticalOffset;
 
@@ -65,6 +58,34 @@ public final class Alien extends Monster {
             pathfinder.climbingWidth = 0.8f;
             pathfinder.climbingHeight = 0.8f;
         }
+    }
+
+    public void serverSync() {
+        assert !level().isClientSide;
+
+        entityData.set(MOVEMENT, movement.ordinal());
+        entityData.set(FORWARD, forward, true);
+        entityData.set(UP, up, true);
+        entityData.set(VERTICAL_OFFSET, verticalOffset);
+    }
+
+    public void clientSync() {
+        assert level().isClientSide;
+
+        movement = Movement.values()[entityData.get(MOVEMENT)];
+        forward.set(entityData.get(FORWARD));
+        up.set(entityData.get(UP));
+        verticalOffset = entityData.get(VERTICAL_OFFSET);
+    }
+
+    @Override
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+
+        builder.define(MOVEMENT, 0);
+        builder.define(FORWARD, new Vector3f(1, 0, 0));
+        builder.define(UP, new Vector3f(0, 1, 0));
+        builder.define(VERTICAL_OFFSET, 0f);
     }
 
     @Override
@@ -177,10 +198,10 @@ public final class Alien extends Monster {
 
         pathfinder.workOnPath(getBlockX(), getBlockY(), getBlockZ());
 
-        completePathIfExactPosAlreadyClosed: if (pathfinder.status == Pathfinder.Status.RUNNING) {
-            var possibleNodeAtExactPos = pathfinder.closedNodes.get(Simple.hash(exactPos.getX(), exactPos.getY(), exactPos.getZ()));
-            if (possibleNodeAtExactPos == null) break completePathIfExactPosAlreadyClosed;
-            pathfinder.finishAt(possibleNodeAtExactPos);
+        // finish path if exact target was already closed
+        if (pathfinder.status == Pathfinder.Status.RUNNING) {
+            var maybeNodeAtExactPos = pathfinder.closedNodes.get(Simple.hash(exactPos.getX(), exactPos.getY(), exactPos.getZ()));
+            if (maybeNodeAtExactPos != null) pathfinder.finishAt(maybeNodeAtExactPos);
         }
 
         if (pathfinder.status != Pathfinder.Status.DONE || pathfinder.path.isEmpty()) return;
@@ -234,86 +255,6 @@ public final class Alien extends Monster {
                 setDeltaMovement(direction.scale(speed));
             }
             case null -> {}
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void serverSync() {
-        assert !level().isClientSide;
-
-        for (var synced : SYNCED_FIELDS) try {
-            if (synced.field.getType().isEnum()) {
-                entityData.set((EntityDataAccessor<Integer>) synced.accessor, ((Enum<?>) synced.field.get(this)).ordinal());
-            } else {
-                entityData.set((EntityDataAccessor<Object>) synced.accessor, synced.field.get(this), true);
-            }
-        } catch (IllegalAccessException e) {
-            Log.error("forgot to make synced field '%s' public!", synced.field.getName());
-        }
-    }
-
-    public void clientSync() {
-        assert level().isClientSide;
-
-        for (var synced : SYNCED_FIELDS) try {
-            if (synced.field.getType().isEnum()) {
-                synced.field.set(this, synced.field.getType().getEnumConstants()[(int) entityData.get(synced.accessor)]);
-            } else if (synced.field.getType() == Vector3f.class) {
-                var field = (Vector3f) synced.field.get(this);
-                field.set((Vector3f) entityData.get(synced.accessor));
-            } else {
-                synced.field.set(this, entityData.get(synced.accessor));
-            }
-        } catch (IllegalAccessException e) {
-            Log.error("forgot to make synced field '%s' public!", synced.field.getName());
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-
-        for (var synced : SYNCED_FIELDS) {
-            if (synced.field.getType().isEnum()) {
-                builder.define((EntityDataAccessor<Integer>) synced.accessor, 0);
-            } else if (synced.field.getType() == Vector3f.class) {
-                builder.define((EntityDataAccessor<Vector3f>) synced.accessor, new Vector3f());
-            } else if (synced.field.getType() == float.class) {
-                builder.define((EntityDataAccessor<Float>) synced.accessor, 0f);
-            } else {
-                Log.error("no default value for type '%s'", synced.field.getType().getSimpleName());
-            }
-        }
-    }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Sync {}
-
-    public record SyncedField(
-        Field field,
-        EntityDataAccessor<?> accessor
-    ) {}
-    public static final ArrayList<SyncedField> SYNCED_FIELDS = new ArrayList<>();
-
-    static {
-        for (var field : Alien.class.getDeclaredFields()) {
-            if (!field.isAnnotationPresent(Sync.class)) continue;
-
-            EntityDataAccessor<?> accessor = null;
-
-            if (field.getType().isEnum()) {
-                accessor = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.INT);
-            } else if (field.getType() == Vector3f.class) {
-                accessor = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.VECTOR3);
-            } else if (field.getType() == float.class) {
-                accessor = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.FLOAT);
-            } else {
-                Log.error("type '%s' cannot be synced!", field.getName(), field.getType().getSimpleName());
-            }
-
-            if (accessor != null) SYNCED_FIELDS.add(new SyncedField(field, accessor));
         }
     }
 }

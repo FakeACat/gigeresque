@@ -78,7 +78,7 @@ public class AlienRenderer extends AzEntityRenderer<Alien> {
                 alien.up.z * partialTick + alien.clientPreviousUp.z * (1 - partialTick)
             );
             poseStack.rotateAround(Simple.quaternionFromDirection(forward, up), 0, alien.getBbHeight() / 2.0f, 0);
-            poseStack.translate(0, alien.verticalOffset, 0);
+            poseStack.translate(0, alien.verticalOffset * partialTick + alien.clientPreviousVerticalOffset * (1 - partialTick), 0);
         }
     }
 
