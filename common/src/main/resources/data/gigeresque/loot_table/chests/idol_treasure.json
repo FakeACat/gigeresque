@@ -11,7 +11,7 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"weight": 25,
+					"weight": 10,
 					"name": "minecraft:slime_ball",
 					"functions": [
 						{
@@ -27,7 +27,7 @@
 				},
 				{
 					"type": "minecraft:item",
-					"weight": 12,
+					"weight": 10,
 					"name": "minecraft:fire_charge",
 					"functions": [
 						{
@@ -59,23 +59,7 @@
 				},
 				{
 					"type": "minecraft:item",
-					"weight": 11,
-					"name": "minecraft:white_wool",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 1,
-								"max": 8
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 10,
+					"weight": 5,
 					"name": "minecraft:shroomlight",
 					"functions": [
 						{
@@ -107,7 +91,7 @@
 				},
 				{
 					"type": "minecraft:item",
-					"weight": 7,
+					"weight": 4,
 					"name": "minecraft:cactus",
 					"functions": [
 						{
@@ -123,7 +107,7 @@
 				},
 				{
 					"type": "minecraft:item",
-					"weight": 5,
+					"weight": 4,
 					"name": "minecraft:cocoa_beans",
 					"functions": [
 						{
@@ -132,22 +116,6 @@
 								"type": "minecraft:uniform",
 								"min": 6,
 								"max": 16
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 5,
-					"name": "minecraft:glow_ink_sac",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 3,
-								"max": 8
 							},
 							"add": false
 						}
@@ -180,38 +148,6 @@
 								"type": "minecraft:uniform",
 								"min": 5,
 								"max": 15
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 10,
-					"name": "minecraft:nether_brick",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 1,
-								"max": 10
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 15,
-					"name": "minecraft:glowstone_dust",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 8,
-								"max": 16
 							},
 							"add": false
 						}
@@ -321,38 +257,6 @@
 				{
 					"type": "minecraft:item",
 					"weight": 2,
-					"name": "minecraft:phantom_membrane",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 3,
-								"max": 9
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 3,
-					"name": "minecraft:prismarine_crystals",
-					"functions": [
-						{
-							"function": "minecraft:set_count",
-							"count": {
-								"type": "minecraft:uniform",
-								"min": 1,
-								"max": 5
-							},
-							"add": false
-						}
-					]
-				},
-				{
-					"type": "minecraft:item",
-					"weight": 2,
 					"name": "minecraft:infested_stone",
 					"functions": [
 						{
@@ -416,7 +320,7 @@
 				},
 				{
 					"type": "minecraft:item",
-					"weight": 6,
+					"weight": 3,
 					"name": "gigeresque:sealed_ampoule_goo"
 				},
 				{
