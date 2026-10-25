@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
@@ -20,7 +21,7 @@ public abstract class BaseBlockRenderer<T extends BlockEntity> extends AzBlockEn
         @Nullable Supplier<AzAnimator<Long, T>> animator,
         @Nullable AzRenderLayer<Long, T>... layers
     ) {
-        super(buildConfig(model, texture, animator, layers));
+        super(buildConfig(be -> model, be -> texture, animator, layers));
     }
 
     public BaseBlockRenderer(ResourceLocation model, ResourceLocation texture, @Nullable Supplier<AzAnimator<Long, T>> animator) {
@@ -31,14 +32,18 @@ public abstract class BaseBlockRenderer<T extends BlockEntity> extends AzBlockEn
         this(model, texture, null, new AzRenderLayer[0]);
     }
 
+    public BaseBlockRenderer(Function<T, ResourceLocation> model, Function<T, ResourceLocation> texture) {
+        super(buildConfig(model, texture, null));
+    }
+
     @SafeVarargs
     private static <T extends BlockEntity> AzBlockEntityRendererConfig<T> buildConfig(
-        ResourceLocation model,
-        ResourceLocation texture,
+        Function<T, ResourceLocation> model,
+        Function<T, ResourceLocation> texture,
         @Nullable Supplier<AzAnimator<Long, T>> animator,
         @Nullable AzRenderLayer<Long, T>... layers
     ) {
-        var builder = AzBlockEntityRendererConfig.<T>builder(model, texture);
+        var builder = AzBlockEntityRendererConfig.builder(model, texture);
         if (animator != null)
             builder.setAnimatorProvider(animator);
         if (layers != null) {

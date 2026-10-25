@@ -55,6 +55,7 @@ import mods.cybercat.gigeresque.common.ClientMod;
 import mods.cybercat.gigeresque.common.block.GigBlocks;
 import mods.cybercat.gigeresque.common.block.animators.*;
 import mods.cybercat.gigeresque.common.block.entity.*;
+import mods.cybercat.gigeresque.common.block.petrifiedblocks.PetrifiedStatueBlock;
 import mods.cybercat.gigeresque.common.entity.GigEntities;
 import mods.cybercat.gigeresque.common.item.GigItems;
 import mods.cybercat.gigeresque.common.predicates.*;
@@ -184,8 +185,12 @@ public class FabricModClient implements ClientModInitializer {
         BlockEntityRenderers.register(
             GigEntities.PETRIFIED_STATUE.get(),
             (BlockEntityRendererProvider.Context rendererDispatcherIn) -> new BaseBlockRenderer<>(
-                EntityModels.PETRIFIED_STATUE,
-                EntityTextures.ALIEN_STASIS
+                e -> EntityModels.PETRIFIED_STATUE,
+                e -> switch (e.getBlockState().getValue(PetrifiedStatueBlock.TYPE)) {
+                    case STANDARD -> EntityTextures.ALIEN_STASIS;
+                    case MOSSY -> EntityTextures.ALIEN_STASIS_MOSSY;
+                    case SCULKY -> EntityTextures.ALIEN_STASIS_SCULKY;
+                }
             ) {}
         );
         BlockEntityRenderers.register(

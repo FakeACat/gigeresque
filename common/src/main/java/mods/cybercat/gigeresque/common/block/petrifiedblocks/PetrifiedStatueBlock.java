@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -35,20 +37,29 @@ import mods.cybercat.gigeresque.common.entity.GigEntities;
 
 public class PetrifiedStatueBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public enum Type implements StringRepresentable {
+        STANDARD, MOSSY, SCULKY;
 
+        @Override
+        public @NotNull String getSerializedName() {
+            return name().toLowerCase();
+        }
+    }
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty UNSAFE = BooleanProperty.create("unsafe");
+    public static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
 
     private static final VoxelShape OUTLINE_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
-
-    BlockPos[] blockPoss;
 
     public static final MapCodec<PetrifiedStatueBlock> CODEC = simpleCodec(PetrifiedStatueBlock::new);
 
     public PetrifiedStatueBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
-            this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(UNSAFE, false)
+            this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(UNSAFE, false)
+                .setValue(TYPE, Type.STANDARD)
         );
     }
 
@@ -58,7 +69,7 @@ public class PetrifiedStatueBlock extends BaseEntityBlock {
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, UNSAFE);
+        builder.add(FACING, UNSAFE, TYPE);
     }
 
     @Override

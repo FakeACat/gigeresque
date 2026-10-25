@@ -2,10 +2,13 @@ package mods.cybercat.gigeresque.common.block;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -163,6 +166,30 @@ public record GigBlocks() implements CommonBlockRegistryInterface, CommonItemReg
         CommonMod.MOD_ID,
         "petrified_statue",
         () -> new BlockItem(PETRIFIED_STATUE_BLOCK.get(), new Item.Properties())
+    );
+    public static final Supplier<BlockItem> PETRIFIED_STATUE_BLOCK_MOSSY_ITEM = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "petrified_statue_mossy",
+        () -> new BlockItem(PETRIFIED_STATUE_BLOCK.get(), new Item.Properties()) {
+            @Override
+            protected BlockState getPlacementState(@NotNull BlockPlaceContext context) {
+                var ps = super.getPlacementState(context);
+                if (ps == null) return null;
+                return ps.setValue(PetrifiedStatueBlock.TYPE, PetrifiedStatueBlock.Type.MOSSY);
+            }
+        }
+    );
+    public static final Supplier<BlockItem> PETRIFIED_STATUE_BLOCK_SCULKY_ITEM = CommonItemRegistryInterface.registerItem(
+        CommonMod.MOD_ID,
+        "petrified_statue_sculky",
+        () -> new BlockItem(PETRIFIED_STATUE_BLOCK.get(), new Item.Properties()) {
+            @Override
+            protected BlockState getPlacementState(@NotNull BlockPlaceContext context) {
+                var ps = super.getPlacementState(context);
+                if (ps == null) return null;
+                return ps.setValue(PetrifiedStatueBlock.TYPE, PetrifiedStatueBlock.Type.SCULKY);
+            }
+        }
     );
 
     public static final Supplier<PetrifiedStatueInvisBlock> PETRIFIED_STATUE_BLOCK_INVIS = CommonBlockRegistryInterface.registerBlock(
