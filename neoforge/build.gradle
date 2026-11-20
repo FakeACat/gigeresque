@@ -76,6 +76,6 @@ if (keyPropsFile.exists()) {
     }
 }
 
-tasks.withType(JavaExec) {
-     enableAssertions = true
+tasks.withType(JavaExec).configureEach {
+    enableAssertions = true
 }
