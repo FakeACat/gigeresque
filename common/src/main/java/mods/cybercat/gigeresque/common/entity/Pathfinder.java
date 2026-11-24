@@ -34,7 +34,7 @@ public class Pathfinder {
     }
 
     public int maxSteps = 10000;
-    public int stepsPerTick = 10;
+    public int stepsPerTick = 20;
 
     public ServerLevel level;
     public DistanceFunction distanceFunction;

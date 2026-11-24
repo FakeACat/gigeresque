@@ -3,6 +3,7 @@ package mods.cybercat.gigeresque.client.entity.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.common.animation.controller.AzAnimationController;
 import mod.azure.azurelib.common.animation.controller.AzAnimationControllerContainer;
+import mod.azure.azurelib.common.animation.controller.keyframe.AzKeyframeCallbacks;
 import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
 import mod.azure.azurelib.common.animation.impl.AzEntityAnimator;
 import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
@@ -13,6 +14,7 @@ import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererPipeline;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +25,7 @@ import mods.cybercat.gigeresque.client.entity.model.EntityModels;
 import mods.cybercat.gigeresque.client.entity.texture.EntityTextures;
 import mods.cybercat.gigeresque.common.Simple;
 import mods.cybercat.gigeresque.common.entity.Alien;
+import mods.cybercat.gigeresque.common.sound.GigSounds;
 
 public class AlienRenderer extends AzEntityRenderer<Alien> {
 
@@ -85,7 +88,103 @@ public class AlienRenderer extends AzEntityRenderer<Alien> {
     public static class Animator extends AzEntityAnimator<Alien> {
         @Override
         public void registerControllers(AzAnimationControllerContainer<Alien> container) {
-            container.add(AzAnimationController.builder(this, MOVEMENT_CONTROLLER).setTransitionLength(0).build());
+            container.add(
+                AzAnimationController.builder(this, MOVEMENT_CONTROLLER)
+                    .setTransitionLength(5)
+                    .setKeyframeCallbacks(
+                        AzKeyframeCallbacks.<Alien>builder()
+                            .setSoundKeyframeHandler(
+                                event -> {
+                                    if (event.getKeyframeData().getSound().equals("footstepSoundkey")) {
+                                        event.getAnimatable()
+                                            .level()
+                                            .playLocalSound(
+                                                event.getAnimatable().getX(),
+                                                event.getAnimatable().getY(),
+                                                event.getAnimatable().getZ(),
+                                                GigSounds.ALIEN_FOOTSTEP.get(),
+                                                SoundSource.HOSTILE,
+                                                0.5F,
+                                                1.0F,
+                                                true
+                                            );
+                                    }
+                                    if (event.getKeyframeData().getSound().equals("handstepSoundkey")) {
+                                        event.getAnimatable()
+                                            .level()
+                                            .playLocalSound(
+                                                event.getAnimatable().getX(),
+                                                event.getAnimatable().getY(),
+                                                event.getAnimatable().getZ(),
+                                                GigSounds.ALIEN_HANDSTEP.get(),
+                                                SoundSource.HOSTILE,
+                                                0.5F,
+                                                1.0F,
+                                                true
+                                            );
+                                    }
+                                    if (event.getKeyframeData().getSound().equals("ambientSoundkey")) {
+                                        event.getAnimatable()
+                                            .level()
+                                            .playLocalSound(
+                                                event.getAnimatable().getX(),
+                                                event.getAnimatable().getY(),
+                                                event.getAnimatable().getZ(),
+                                                GigSounds.ALIEN_AMBIENT.get(),
+                                                SoundSource.HOSTILE,
+                                                0.5F,
+                                                1.0F,
+                                                true
+                                            );
+                                    }
+                                    if (event.getKeyframeData().getSound().equals("thudSoundkey")) {
+                                        event.getAnimatable()
+                                            .level()
+                                            .playLocalSound(
+                                                event.getAnimatable().getX(),
+                                                event.getAnimatable().getY(),
+                                                event.getAnimatable().getZ(),
+                                                GigSounds.ALIEN_DEATH_THUD.get(),
+                                                SoundSource.HOSTILE,
+                                                0.5F,
+                                                1.0F,
+                                                true
+                                            );
+                                    }
+                                    if (event.getKeyframeData().getSound().equals("biteSoundkey")) {
+                                        event.getAnimatable()
+                                            .level()
+                                            .playLocalSound(
+                                                event.getAnimatable().getX(),
+                                                event.getAnimatable().getY(),
+                                                event.getAnimatable().getZ(),
+                                                GigSounds.ALIEN_HEADBITE.get(),
+                                                SoundSource.HOSTILE,
+                                                0.5F,
+                                                1.0F,
+                                                true
+                                            );
+                                    }
+                                    if (event.getKeyframeData().getSound().equals("crunchSoundkey")) {
+                                        event.getAnimatable()
+                                            .level()
+                                            .playLocalSound(
+                                                event.getAnimatable().getX(),
+                                                event.getAnimatable().getY(),
+                                                event.getAnimatable().getZ(),
+                                                GigSounds.ALIEN_CRUNCH.get(),
+                                                SoundSource.HOSTILE,
+                                                0.5F,
+                                                1.0F,
+                                                true
+                                            );
+                                    }
+                                }
+                            )
+                            .build()
+                    )
+                    .build()
+            );
         }
 
         public static final ResourceLocation TOMBY_ANIMATIONS = Constants.modResource("animations/entity/alien/alien.animation.json");

@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
@@ -17,9 +18,10 @@ import org.joml.Vector3f;
 import mods.cybercat.gigeresque.CommonMod;
 import mods.cybercat.gigeresque.common.Log;
 import mods.cybercat.gigeresque.common.Simple;
+import mods.cybercat.gigeresque.common.entity.impl.classic.ClassicAlienEntity;
 
 public final class Alien extends Monster {
-    public final Pathfinder pathfinder = new Pathfinder();
+    public final Pathfinder pathfinder;
 
     public enum Movement {
         RUNNING,
@@ -29,7 +31,7 @@ public final class Alien extends Monster {
     public static final EntityDataAccessor<Integer> MOVEMENT = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.INT);
     public Movement movement = Movement.RUNNING;
 
-    public static final float ROTATION_SMOOTHING = .8f;
+    public static final float ROTATION_SMOOTHING = .6f;
 
     public static final EntityDataAccessor<Vector3f> FORWARD = SynchedEntityData.defineId(Alien.class, EntityDataSerializers.VECTOR3);
     public final Vector3f forward = new Vector3f();
@@ -43,12 +45,16 @@ public final class Alien extends Monster {
     public float verticalOffset;
     public float clientPreviousVerticalOffset;
 
+    public double climbSpeedMultiplier = .3;
+
     public BlockPos currentPathfindingTarget;
 
     public Alien(EntityType<Alien> type, Level level) {
         super(type, level);
 
         if (level instanceof ServerLevel serverLevel) {
+            pathfinder = new Pathfinder();
+
             pathfinder.level = serverLevel;
 
             pathfinder.standingWidth = getBbWidth();
@@ -57,11 +63,20 @@ public final class Alien extends Monster {
             pathfinder.canClimb = true;
             pathfinder.climbingWidth = 0.8f;
             pathfinder.climbingHeight = 0.8f;
+        } else {
+            pathfinder = null;
         }
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return ClassicAlienEntity.createAttributes()
+            .add(Attributes.SAFE_FALL_DISTANCE, 15);
     }
 
     public void serverSync() {
         assert !level().isClientSide;
+
+        validateRotation();
 
         entityData.set(MOVEMENT, movement.ordinal());
         entityData.set(FORWARD, forward, true);
@@ -76,6 +91,17 @@ public final class Alien extends Monster {
         forward.set(entityData.get(FORWARD));
         up.set(entityData.get(UP));
         verticalOffset = entityData.get(VERTICAL_OFFSET);
+
+        validateRotation();
+    }
+
+    public void validateRotation() {
+        assert !Float.isNaN(forward.x);
+        assert !Float.isNaN(forward.y);
+        assert !Float.isNaN(forward.z);
+        assert !Float.isNaN(up.x);
+        assert !Float.isNaN(up.y);
+        assert !Float.isNaN(up.z);
     }
 
     @Override
@@ -99,13 +125,15 @@ public final class Alien extends Monster {
 
             clientSync();
 
-            forward.mul(ROTATION_SMOOTHING).add(new Vector3f(clientPreviousForward).mul(1 - ROTATION_SMOOTHING));
-            up.mul(ROTATION_SMOOTHING).add(new Vector3f(clientPreviousUp).mul(1 - ROTATION_SMOOTHING));
+            forward.mul(ROTATION_SMOOTHING).add(new Vector3f(clientPreviousForward).mul(1.0f - ROTATION_SMOOTHING));
+            up.mul(ROTATION_SMOOTHING).add(new Vector3f(clientPreviousUp).mul(1.0f - ROTATION_SMOOTHING));
 
             verticalOffset *= ROTATION_SMOOTHING;
-            verticalOffset += clientPreviousVerticalOffset * (1 - ROTATION_SMOOTHING);
+            verticalOffset += clientPreviousVerticalOffset * (1.0f - ROTATION_SMOOTHING);
             return;
         }
+
+        verticalOffset = 0;
 
         assert pathfinder.level == level();
 
@@ -147,37 +175,46 @@ public final class Alien extends Monster {
             }
             case CLIMBING -> {
                 setNoGravity(true);
+                fallDistance = 0;
 
-                if (getDeltaMovement().lengthSqr() != 0) {
+                if (getDeltaMovement().lengthSqr() > 0.001) {
                     forward.set(getDeltaMovement().x, getDeltaMovement().y, getDeltaMovement().z).normalize();
                 }
 
-                var closestBlockCollision = Simple.closestBlockCollision(
-                    level(),
-                    position().add(0, getBbHeight() / 2, 0),
-                    pathfinder.climbingReach + 1,
-                    0.2
-                );
+                var centre = position().add(0, getBbHeight() / 2, 0);
+
+                var closestBlockCollision = Simple.closestBlockCollision(level(), centre, pathfinder.climbingReach + 1, 0.2);
                 if (closestBlockCollision == null) {
                     setNoGravity(false);
                     Log.warn("unable to find closest block while climbing");
                 } else {
-                    var offset = position().subtract(closestBlockCollision);
+                    var offset = centre.subtract(closestBlockCollision);
                     up.set(offset.x, offset.y, offset.z).normalize();
+
+                    // point forward at 90 degrees from up (prevents weird rotations sometimes)
+                    {
+                        var z = new Vector3f(up).cross(forward).cross(up);
+                        if (z.lengthSquared() != 0) {
+                            forward.set(z).normalize();
+                        }
+                    }
 
                     var idealDistanceFromBlocks = (pathfinder.climbingWidth + pathfinder.climbingReach) / 2;
                     var distanceFromBlocks = offset.length();
+                    verticalOffset = -(float) Math.max(distanceFromBlocks - getBbHeight() / 2, 0);
 
-                    var pullStrength = 0.1;
+                    if (distanceFromBlocks > idealDistanceFromBlocks) {
+                        var pullStrength = 0.05;
 
-                    var distanceFromIdealDistanceFromBlocks = Math.abs(distanceFromBlocks - idealDistanceFromBlocks);
-                    if (distanceFromIdealDistanceFromBlocks < pullStrength) {
-                        pullStrength = distanceFromIdealDistanceFromBlocks;
+                        var distanceFromIdealDistanceFromBlocks = Math.abs(distanceFromBlocks - idealDistanceFromBlocks);
+                        if (distanceFromIdealDistanceFromBlocks < pullStrength) {
+                            pullStrength = distanceFromIdealDistanceFromBlocks;
+                        }
+
+                        setDeltaMovement(getDeltaMovement().subtract(up.x * pullStrength, up.y * pullStrength, up.z * pullStrength));
                     }
 
-                    if (distanceFromBlocks > idealDistanceFromBlocks) pullStrength *= -1;
-
-                    setDeltaMovement(getDeltaMovement().scale(0.9).add(up.x * pullStrength, up.y * pullStrength, up.z * pullStrength));
+                    setDeltaMovement(getDeltaMovement().scale(0.9));
                 }
             }
             case null -> {}
@@ -238,7 +275,7 @@ public final class Alien extends Monster {
                 var distanceSquaredToNextNode = centre.distanceToSqr(nodePosition);
 
                 if (distanceSquaredToNextNode > 8) pathfinder.status = Pathfinder.Status.FAILED;
-                if (distanceSquaredToNextNode < .25) pathfinder.path.pop();
+                if (distanceSquaredToNextNode < .25 * .25) pathfinder.path.pop();
 
                 var closestBlockCollision = Simple.closestBlockCollision(level(), centre, pathfinder.climbingReach + 1, 0.2);
 
@@ -249,7 +286,7 @@ public final class Alien extends Monster {
 
                 var movementAttribute = getAttribute(Attributes.MOVEMENT_SPEED);
                 assert movementAttribute != null;
-                var speed = movementAttribute.getValue();
+                var speed = movementAttribute.getValue() * climbSpeedMultiplier;
 
                 var direction = nodePosition.subtract(centre).normalize();
                 setDeltaMovement(direction.scale(speed));
